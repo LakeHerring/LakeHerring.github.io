@@ -6,142 +6,213 @@
 <title>Lake Herring Department of Operations</title>
 
 <style>
-
-body {
-    background-color: #0f1710;
-    color: #d8c68c;
-    font-family: Georgia, serif;
-    max-width: 1100px;
-    margin: auto;
-    padding: 30px;
-    line-height: 1.6;
-}
-
-header {
-    text-align: center;
-    padding: 20px;
-    border-bottom: 2px solid #75663a;
-}
-
-h1 {
-    font-size: 2.4rem;
-    margin-bottom: 5px;
-    color: #f2df9f;
-}
-
-h2 {
-    color: #f2df9f;
-    margin-top: 0;
-}
-
-.subtitle {
-    font-style: italic;
-    color: #b8a66f;
-}
-
-section {
-    background: #162118;
-    border: 1px solid #6f6037;
-    padding: 20px;
-    margin-top: 25px;
-}
-
-.status-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.status-box {
-    padding: 12px;
-    border: 1px solid #5e5230;
-    background: #111911;
-}
-
-.timeline-entry {
-    border-left: 3px solid #7c6c3e;
-    padding-left: 15px;
-    margin: 15px 0;
-}
-
-.notice-box {
-    background: #0d130d;
-    border: 1px dashed #99854b;
-    padding: 15px;
-    font-style: italic;
-}
-
-.console {
-    font-size: 1.1rem;
-    min-height: 30px;
-    color: #f0db9d;
-}
-
-button {
-    background: #7d6d3f;
-    border: none;
-    color: #101010;
-    padding: 10px 18px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-button:hover {
-    background: #9d8a50;
-}
-
-.input-box {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #111;
-    border: 1px solid #6a5a31;
-    color: #d8c68c;
-}
-
-.response {
-    margin-top: 15px;
-    padding: 12px;
-    background: #0f1510;
-    border-left: 3px solid #99854b;
-}
-
-footer {
-    margin-top: 40px;
-    text-align: center;
-    font-style: italic;
-    color: #9f9165;
-    padding-bottom: 30px;
-}
-
-a {
-    color: #f2df9f;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.redacted {
-    background: black;
-    color: black;
-    user-select: none;
-}
-
-@media (max-width: 700px) {
-    .status-grid {
-        grid-template-columns: 1fr;
+    :root {
+        --bg-dark: #0a0f0a;
+        --bg-panel: #121b14;
+        --gold-bright: #f2df9f;
+        --gold-muted: #d8c68c;
+        --gold-dark: #75663a;
+        --accent-green: #3e5c45;
+        --terminal-font: 'Courier New', Courier, monospace;
     }
-}
 
+    body {
+        background: radial-gradient(circle, #1a261d 0%, #0a0f0a 100%);
+        color: var(--gold-muted);
+        font-family: Georgia, serif;
+        max-width: 1100px;
+        margin: auto;
+        padding: 30px;
+        line-height: 1.6;
+    }
+
+    /* CRT Scanline Effect Overlay */
+    body::before {
+        content: " ";
+        display: block;
+        position: fixed;
+        top: 0; left: 0; bottom: 0; right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        z-index: 10;
+        background-size: 100% 4px, 3px 100%;
+        pointer-events: none;
+    }
+
+    header {
+        text-align: center;
+        padding: 40px 20px;
+        border-bottom: 3px double var(--gold-dark);
+        position: relative;
+    }
+
+    .stamp {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        border: 4px solid #8b0000;
+        color: #8b0000;
+        font-family: sans-serif;
+        font-weight: bold;
+        padding: 5px 10px;
+        text-transform: uppercase;
+        transform: rotate(15deg);
+        opacity: 0.6;
+        font-size: 1.2rem;
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        margin-bottom: 5px;
+        color: var(--gold-bright);
+        letter-spacing: 2px;
+    }
+
+    h2 {
+        color: var(--gold-bright);
+        border-left: 5px solid var(--gold-dark);
+        padding-left: 15px;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+    }
+
+    .subtitle {
+        font-style: italic;
+        color: #b8a66f;
+        font-size: 1.1rem;
+    }
+
+    section {
+        background: var(--bg-panel);
+        border: 1px solid var(--gold-dark);
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .status-box {
+        padding: 15px;
+        border: 1px solid #4a3f25;
+        background: #0d140e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .status-box span {
+        color: var(--gold-bright);
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(242, 223, 159, 0.5);
+    }
+
+    .timeline-entry {
+        border-left: 3px solid var(--gold-dark);
+        padding-left: 20px;
+        margin: 20px 0;
+        position: relative;
+    }
+
+    .notice-box {
+        background: #0a110a;
+        border: 1px dashed var(--gold-muted);
+        padding: 20px;
+        font-style: italic;
+        color: #b8a66f;
+    }
+
+    .console, .response, .input-box {
+        font-family: var(--terminal-font);
+    }
+
+    .console {
+        font-size: 1.2rem;
+        min-height: 30px;
+        color: #f0db9d;
+        background: black;
+        padding: 10px;
+        border: 1px solid var(--gold-dark);
+    }
+
+    button {
+        background: var(--gold-dark);
+        border: none;
+        color: #101010;
+        padding: 12px 24px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 15px;
+        text-transform: uppercase;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: var(--gold-bright);
+    }
+
+    .input-box {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background: #050805;
+        border: 1px solid var(--gold-dark);
+        color: #f0db9d;
+        box-sizing: border-box;
+    }
+
+    .response {
+        margin-top: 20px;
+        padding: 15px;
+        background: black;
+        border-left: 4px solid var(--gold-dark);
+        color: #f0db9d;
+        min-height: 50px;
+    }
+
+    footer {
+        margin-top: 60px;
+        text-align: center;
+        font-style: italic;
+        color: #7a6b4d;
+        padding-bottom: 50px;
+    }
+
+    a {
+        color: var(--gold-bright);
+        text-decoration: none;
+        border: 1px solid var(--gold-dark);
+        padding: 10px 20px;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    a:hover {
+        background: var(--gold-dark);
+        color: black;
+    }
+
+    .redacted {
+        background: #333;
+        color: #333;
+        user-select: none;
+        cursor: help;
+    }
+
+    @media (max-width: 700px) {
+        .status-grid { grid-template-columns: 1fr; }
+    }
 </style>
 </head>
 
 <body>
 
 <header>
+    <div class="stamp">TOP SECRET</div>
     <h1>LAKE HERRING DEPARTMENT OF OPERATIONS</h1>
     <div class="subtitle">Restricted Fisheries Zone</div>
     <div class="subtitle">Established Under Authority of the Lake Accord</div>
@@ -149,7 +220,6 @@ a:hover {
 
 <section>
     <h2>PUBLIC NOTICE</h2>
-
     <div class="notice-box">
         Fisheries-related field operations continue under post-Accord policy.<br><br>
         Mission parameters remain classified.<br><br>
@@ -159,93 +229,53 @@ a:hover {
 
 <section>
     <h2>OPERATIONAL STATUS</h2>
-
     <div class="status-grid">
-        <div class="status-box">Field Operations: ACTIVE</div>
-        <div class="status-box">Council Oversight: ACTIVE</div>
-        <div class="status-box">Herring Acquired: 0</div>
-        <div class="status-box">Jurisdictional Concerns: ONGOING</div>
-        <div class="status-box">Public Awareness: CONCERNING</div>
-        <div class="status-box">Operational Integrity: STABLE</div>
+        <div class="status-box">Field Operations: <span>ACTIVE</span></div>
+        <div class="status-box">Council Oversight: <span>ACTIVE</span></div>
+        <div class="status-box">Herring Acquired: <span>0</span></div>
+        <div class="status-box">Jurisdictional Concerns: <span>ONGOING</span></div>
+        <div class="status-box">Public Awareness: <span>CONCERNING</span></div>
+        <div class="status-box">Operational Integrity: <span>STABLE</span></div>
     </div>
 </section>
 
 <section>
     <h2>HISTORICAL ARCHIVES</h2>
-
-    <div class="timeline-entry">
-        2004 — Fisheries operations established
-    </div>
-
-    <div class="timeline-entry">
-        2007 — <span class="redacted">██████████████████████</span>
-    </div>
-
-    <div class="timeline-entry">
-        2009 — Lake Accord signed
-    </div>
-
-    <div class="timeline-entry">
-        2024 — Operations resumed
-    </div>
-
-    <div class="timeline-entry">
-        2026 — Border tensions escalated
-    </div>
+    <div class="timeline-entry">2004 — Fisheries operations established</div>
+    <div class="timeline-entry">2007 — <span class="redacted">██████████████████████</span></div>
+    <div class="timeline-entry">2009 — Lake Accord signed</div>
+    <div class="timeline-entry">2024 — Operations resumed</div>
+    <div class="timeline-entry">2026 — Border tensions escalated</div>
 </section>
 
 <section>
     <h2>INCIDENT REPORTS</h2>
-
-    <div>LH-07 — Transmission instability detected</div>
-    <div>LH-12 — Operational judgment failure</div>
-    <div>LH-23 — Strategic inactivity exceeded projections</div>
-    <div>LH-42 — 173 hours of fisheries activity completed. No herring secured.</div>
+    <div style="font-family: var(--terminal-font); font-size: 0.9rem;">
+        <div>LH-07 — Transmission instability detected</div>
+        <div>LH-12 — Operational judgment failure</div>
+        <div>LH-23 — Strategic inactivity exceeded projections</div>
+        <div>LH-42 — 173 hours of fisheries activity completed. No herring secured.</div>
+    </div>
 </section>
 
 <section>
     <h2>DEPARTMENT FEED</h2>
-
-    <div id="notice" class="console"></div>
+    <div id="notice" class="console">Initializing...</div>
 </section>
 
 <section>
     <h2>PUBLIC INQUIRY TERMINAL</h2>
-
-    <input
-        id="question"
-        class="input-box"
-        placeholder="Submit inquiry..."
-    >
-
-    <button onclick="respond()">SUBMIT REQUEST</button>
-
-    <div id="response" class="response">
-        Awaiting inquiry.
-    </div>
-
+    <input id="question" class="input-box" placeholder="Enter request for review...">
+    <button onclick="handleInput()">SUBMIT REQUEST</button>
+    <div id="response" class="response">Awaiting inquiry...</div>
 </section>
 
-<section>
+<section style="text-align: center;">
     <h2>LIVE FIELD OPERATIONS</h2>
-
-    <p>
-        Transmission Status: Stable
-    </p>
-
-    <p>
-        Current Mission: Classified
-    </p>
-
-    <p>
-        Public Broadcast Channel:
-    </p>
-
-    <p>
-        <a href="https://kick.com/lakeherring" target="_blank">
-            ACCESS LIVE TRANSMISSION
-        </a>
-    </p>
+    <p>Transmission Status: <span style="color: #0f0; font-family: var(--terminal-font);">STABLE</span></p>
+    <p>Current Mission: <strong>CLASSIFIED</strong></p>
+    <br>
+    <a href="https://kick.com/lakeherring" target="_blank">ACCESS LIVE TRANSMISSION</a>
 </section>
 
 <footer>
@@ -254,78 +284,56 @@ a:hover {
 </footer>
 
 <script>
-
 const notices = [
-
-"Historical records regarding the 2007 Incident remain sealed.",
-
-"Council Representative WHISKERS-01 remains active.",
-
-"Strategic inactivity protocol has been authorized.",
-
-"Jurisdictional concerns remain ongoing.",
-
-"No herring has been secured. This was anticipated.",
-
-"Border tensions remain elevated.",
-
-"Unauthorized fish discourse will be reviewed.",
-
-"Subterranean retrieval operations are currently underway.",
-
-"The Lake Accord remains legally binding."
-
+    "Historical records regarding the 2007 Incident remain sealed.",
+    "Council Representative WHISKERS-01 remains active.",
+    "Strategic inactivity protocol has been authorized.",
+    "Jurisdictional concerns remain ongoing.",
+    "No herring has been secured. This was anticipated.",
+    "Border tensions remain elevated.",
+    "Unauthorized fish discourse will be reviewed.",
+    "Subterranean retrieval operations are currently underway.",
+    "The Lake Accord remains legally binding."
 ];
 
 function rotateNotice() {
-
-    const random =
-        notices[Math.floor(Math.random() * notices.length)];
-
-    document.getElementById("notice").innerText = random;
+    const random = notices[Math.floor(Math.random() * notices.length)];
+    document.getElementById("notice").innerText = `> ${random}`;
 }
-
-rotateNotice();
 
 setInterval(rotateNotice, 5000);
+rotateNotice();
 
-function respond() {
+// Typewriter effect function
+function typeWriter(text, elementId) {
+    const element = document.getElementById(elementId);
+    element.innerHTML = ""; 
+    let i = 0;
+    const speed = 40; // milliseconds per character
 
-    let q =
-        document.getElementById("question")
-        .value
-        .toLowerCase();
-
-    let response = "Request forwarded to the appropriate department.";
-
-    if(q.includes("lake herring")) {
-        response = "Jurisdictional concerns.";
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
     }
-
-    else if(q.includes("2007")) {
-        response = "Historical records remain sealed.";
-    }
-
-    else if(q.includes("fish")) {
-        response = "Legacy compliance requirements.";
-    }
-
-    else if(q.includes("cat")) {
-        response = "Council oversight.";
-    }
-
-    else if(q.includes("why")) {
-        response = "Further questioning is discouraged.";
-    }
-
-    else if(q.includes("what")) {
-        response = "Clearance denied.";
-    }
-
-    document.getElementById("response").innerText =
-        response;
+    type();
 }
 
+function handleInput() {
+    let q = document.getElementById("question").value.toLowerCase();
+    let responseText = "Request forwarded to the appropriate department.";
+
+    if(q.includes("lake herring")) responseText = "Jurisdictional concerns.";
+    else if(q.includes("2007")) responseText = "Historical records remain sealed.";
+    else if(q.includes("fish")) responseText = "Legacy compliance requirements.";
+    else if(q.includes("cat")) responseText = "Council oversight.";
+    else if(q.includes("why")) responseText = "Further questioning is discouraged.";
+    else if(q.includes("what")) responseText = "Clearance denied.";
+
+    typeWriter(responseText, "response");
+}
 </script>
 
 </body>
