@@ -24,7 +24,7 @@
         margin: auto;
         padding: 30px;
         line-height: 1.6;
-        transition: filter 0.1s ease;
+        transition: all 0.5s ease;
     }
 
     /* CRT Scanline Effect Overlay */
@@ -62,31 +62,11 @@
         font-size: 1.2rem;
         cursor: pointer;
         user-select: none;
-        transition: all 0.2s ease;
     }
 
-    .stamp:active { transform: rotate(15deg) scale(0.9); }
-
-    h1 {
-        font-size: 2.8rem;
-        margin-bottom: 5px;
-        color: var(--gold-bright);
-        letter-spacing: 2px;
-    }
-
-    h2 {
-        color: var(--gold-bright);
-        border-left: 5px solid var(--gold-dark);
-        padding-left: 15px;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-    }
-
-    .subtitle {
-        font-style: italic;
-        color: #b8a66f;
-        font-size: 1.1rem;
-    }
+    h1 { font-size: 2.8rem; margin-bottom: 5px; color: var(--gold-bright); letter-spacing: 2px; }
+    h2 { color: var(--gold-bright); border-left: 5px solid var(--gold-dark); padding-left: 15px; font-size: 1.5rem; text-transform: uppercase; }
+    .subtitle { font-style: italic; color: #b8a66f; font-size: 1.1rem; }
 
     section {
         background: var(--bg-panel);
@@ -97,156 +77,39 @@
     }
 
     /* VIDEO FEED STYLING */
-    .video-container {
-        position: relative;
-        padding-bottom: 56.25%; 
-        height: 0;
-        overflow: hidden;
-        border: 4px solid #2a2a2a;
-        box-shadow: inset 0 0 20px #000;
-    }
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 4px solid #2a2a2a; box-shadow: inset 0 0 20px #000; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: grayscale(0.2) contrast(1.2); }
+    .video-bezel { background: #1a1a1a; padding: 10px; border: 2px solid var(--gold-dark); display: inline-block; width: 100%; box-sizing: border-box; }
+    .video-label { font-family: var(--terminal-font); color: var(--gold-bright); font-size: 0.8rem; margin-bottom: 5px; display: flex; justify-content: space-between; }
 
-    .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        filter: grayscale(0.2) contrast(1.2);
-    }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .status-box { padding: 15px; border: 1px solid #4a3f25; background: #0d140e; display: flex; justify-content: space-between; align-items: center; }
+    .status-box span { color: var(--gold-bright); font-weight: bold; text-shadow: 0 0 5px rgba(242, 223, 159, 0.5); }
 
-    .video-bezel {
-        background: #1a1a1a;
-        padding: 10px;
-        border: 2px solid var(--gold-dark);
-        display: inline-block;
-        width: 100%;
-        box-sizing: border-box;
-    }
+    .timeline-entry { border-left: 3px solid var(--gold-dark); padding-left: 20px; margin: 20px 0; position: relative; }
+    .redacted { background: #333; color: #333; user-select: none; cursor: pointer; transition: background 0.1s; }
+    .redacted:hover { background: #444; }
 
-    .video-label {
-        font-family: var(--terminal-font);
-        color: var(--gold-bright);
-        font-size: 0.8rem;
-        margin-bottom: 5px;
-        display: flex;
-        justify-content: space-between;
-    }
+    .notice-box { background: #0a110a; border: 1px dashed var(--gold-muted); padding: 20px; font-style: italic; color: #b8a66f; }
+    .console, .response, .input-box { font-family: var(--terminal-font); }
+    .console { font-size: 1.2rem; min-height: 30px; color: #f0db9d; background: black; padding: 10px; border: 1px solid var(--gold-dark); }
 
-    .status-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
+    button { background: var(--gold-dark); border: none; color: #101010; padding: 12px 24px; cursor: pointer; font-weight: bold; margin-top: 15px; text-transform: uppercase; transition: background 0.3s ease; }
+    button:hover { background: var(--gold-bright); }
 
-    .status-box {
-        padding: 15px;
-        border: 1px solid #4a3f25;
-        background: #0d140e;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+    .input-box { width: 100%; padding: 12px; margin-top: 15px; background: #050805; border: 1px solid var(--gold-dark); color: #f0db9d; box-sizing: border-box; }
+    .response { margin-top: 20px; padding: 15px; background: black; border-left: 4px solid var(--gold-dark); color: #f0db9d; min-height: 50px; }
 
-    .status-box span {
-        color: var(--gold-bright);
-        font-weight: bold;
-        text-shadow: 0 0 5px rgba(242, 223, 159, 0.5);
-    }
+    footer { margin-top: 60px; text-align: center; font-style: italic; color: #7a6b4d; padding-bottom: 50px; }
+    a { color: var(--gold-bright); text-decoration: none; border: 1px solid var(--gold-dark); padding: 10px 20px; display: inline-block; transition: all 0.3s ease; }
+    a:hover { background: var(--gold-dark); color: black; }
 
-    .timeline-entry {
-        border-left: 3px solid var(--gold-dark);
-        padding-left: 20px;
-        margin: 20px 0;
-        position: relative;
-    }
+    /* SPECIAL EFFECTS */
+    #blackout { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 999; display: none; pointer-events: none; }
+    .system-collapse { animation: shake 0.1s infinite; filter: invert(1) hue-rotate(90deg); }
+    .deep-sea { background: radial-gradient(circle, #0a1a26 0%, #020508 100%) !important; color: #7eb2d4 !important; }
+    .deep-sea section { background: #06121b !important; border-color: #2a4a5e !important; }
 
-    .notice-box {
-        background: #0a110a;
-        border: 1px dashed var(--gold-muted);
-        padding: 20px;
-        font-style: italic;
-        color: #b8a66f;
-    }
-
-    .console, .response, .input-box {
-        font-family: var(--terminal-font);
-    }
-
-    .console {
-        font-size: 1.2rem;
-        min-height: 30px;
-        color: #f0db9d;
-        background: black;
-        padding: 10px;
-        border: 1px solid var(--gold-dark);
-    }
-
-    button {
-        background: var(--gold-dark);
-        border: none;
-        color: #101010;
-        padding: 12px 24px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-top: 15px;
-        text-transform: uppercase;
-        transition: background 0.3s ease;
-    }
-
-    button:hover {
-        background: var(--gold-bright);
-    }
-
-    .input-box {
-        width: 100%;
-        padding: 12px;
-        margin-top: 15px;
-        background: #050805;
-        border: 1px solid var(--gold-dark);
-        color: #f0db9d;
-        box-sizing: border-box;
-    }
-
-    .response {
-        margin-top: 20px;
-        padding: 15px;
-        background: black;
-        border-left: 4px solid var(--gold-dark);
-        color: #f0db9d;
-        min-height: 50px;
-    }
-
-    footer {
-        margin-top: 60px;
-        text-align: center;
-        font-style: italic;
-        color: #7a6b4d;
-        padding-bottom: 50px;
-    }
-
-    a {
-        color: var(--gold-bright);
-        text-decoration: none;
-        border: 1px solid var(--gold-dark);
-        padding: 10px 20px;
-        display: inline-block;
-        transition: all 0.3s ease;
-    }
-
-    a:hover {
-        background: var(--gold-dark);
-        color: black;
-    }
-
-    .redacted {
-        background: #333;
-        color: #333;
-        user-select: none;
-        cursor: help;
-    }
-
-    /* GLITCH ANIMATIONS */
     @keyframes shake {
         0% { transform: translate(0,0); }
         25% { transform: translate(5px, -5px); }
@@ -255,18 +118,12 @@
         100% { transform: translate(0,0); }
     }
 
-    .system-collapse {
-        animation: shake 0.1s infinite;
-        filter: invert(1) hue-rotate(90deg);
-    }
-
-    @media (max-width: 700px) {
-        .status-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 700px) { .status-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 
 <body id="mainBody">
+<div id="blackout"></div>
 
 <header>
     <div class="stamp" id="topSecretStamp" onclick="stampClick()">TOP SECRET</div>
@@ -306,32 +163,22 @@
 <section>
     <h2>OPERATIONAL STATUS</h2>
     <div class="status-grid">
-        <div class="status-box">Field Operations: <span>ACTIVE</span></div>
-        <div class="status-box">Council Oversight: <span>ACTIVE</span></div>
-        <div class="status-box">Herring Acquired: <span>0</span></div>
+        <div class="status-box">Field Operations: <span id="stat1">ACTIVE</span></div>
+        <div class="status-box">Council Oversight: <span id="stat2">ACTIVE</span></div>
+        <div class="status-box">Herring Acquired: <span id="stat3">0</span></div>
         <div class="status-box">Jurisdictional Concerns: <span>ONGOING</span></div>
         <div class="status-box">Public Awareness: <span>CONCERNING</span></div>
-        <div class="status-box">Operational Integrity: <span>STABLE</span></div>
+        <div class="status-box">Operational Integrity: <span id="stat4">STABLE</span></div>
     </div>
 </section>
 
 <section>
     <h2>HISTORICAL ARCHIVES</h2>
     <div class="timeline-entry">2004 — Fisheries operations established</div>
-    <div class="timeline-entry">2007 — <span class="redacted">██████████████████████</span></div>
+    <div class="timeline-entry" onclick="redactedClick()">2007 — <span class="redacted" id="redact2007">██████████████████████</span></div>
     <div class="timeline-entry">2009 — Lake Accord signed</div>
     <div class="timeline-entry">2024 — Operations resumed</div>
     <div class="timeline-entry">2026 — Border tensions escalated</div>
-</section>
-
-<section>
-    <h2>INCIDENT REPORTS</h2>
-    <div style="font-family: var(--terminal-font); font-size: 0.9rem;">
-        <div>LH-07 — Transmission instability detected</div>
-        <div>LH-12 — Operational judgment failure</div>
-        <div>LH-23 — Strategic inactivity exceeded projections</div>
-        <div>LH-42 — 173 hours of fisheries activity completed. No herring secured.</div>
-    </div>
 </section>
 
 <section>
@@ -360,21 +207,34 @@
 </footer>
 
 <script>
-// Base64 encoded keywords to prevent easy inspection (Ctrl+U)
-// "lake herring", "2007", "fish", "cat", "why", "what"
+/* 
+  ENCODED KEYS:
+  - "bGFrZSBoZXJyaW5n" (lake herring)
+  - "MjAwNw==" (2007)
+  - "ZmlzaA==" (fish)
+  - "Y2F0" (cat)
+  - "d2h5" (why)
+  - "d2hhdA==" (what)
+  - "S3dPaU5tTmxFaUNuVGdJLk8gTlTgaHRlRXlSIE13SWVuUmFlVCBFd0Rh" (The Scrambled String)
+  - "NjA2Mg==" (6062)
+  - "NzA=" (70)
+*/
+
 const keys = {
     "bGFrZSBoZXJyaW5n": "Jurisdictional concerns.",
     "MjAwNw==": "Historical records remain sealed.",
-    "ZmlzaA==": "Legacy compliance with fisheries doctrine.",
-    "Y2F0": "Council oversight authorized. Please step away from the terminal.",
-    "d2h5": "Further questioning is discouraged for your own safety.",
-    "d2hhdA==": "Clearance level insufficient."
+    "ZmlzaA==": "Legacy compliance requirements.",
+    "Y2F0": "Council oversight authorized. Step away from terminal.",
+    "d2h5": "Further questioning is discouraged.",
+    "d2hhdA==": "Clearance denied."
 };
 
-// The Secret Sequence Base64 ("lake herring 2007 fish cat why what")
-const SECRET_SEQUENCE = "bGFrZSBoZXJyaW5nIDIwMDcgZmlzaCBjYXQgd2h5IHdoYXQ=";
+const SECRET_SCRAMBLE = "S3dPaU5tTmxFaUNuVGdJLk8gTlTgaHRlRXlSIE13SWVuUmFlVCBFd0Rh";
+const CODE_6062 = "NjA2Mg==";
+const CODE_70 = "NzA=";
 
 let stampClicks = 0;
+let redactClicks = 0;
 
 function rotateNotice() {
     const notices = [
@@ -399,63 +259,93 @@ function typeWriter(text, elementId) {
     const element = document.getElementById(elementId);
     element.innerHTML = ""; 
     let i = 0;
-    const speed = 40;
     function type() {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
             i++;
-            setTimeout(type, speed);
+            setTimeout(type, 40);
         }
     }
     type();
 }
 
 function handleInput() {
-    let q = document.getElementById("question").value.toLowerCase().trim();
+    let q = document.getElementById("question").value.trim();
+    let qLower = q.toLowerCase();
     
-    // Check for Secret Sequence first
-    if (btoa(q) === SECRET_SEQUENCE) {
-        triggerSystemCollapse();
+    // EASTER EGG: The Scrambled String (HARD RESET)
+    if (btoa(q) === SECRET_SCRAMBLE) {
+        hardReset();
+        return;
+    }
+
+    // EASTER EGG: 6062 / -6062 (DEEP SEA MODE)
+    if (q === "6062" || q === "-6062") {
+        deepSeaMode();
+        return;
+    }
+
+    // EASTER EGG: 70 (COUNCIL REGISTRY)
+    if (q === "70") {
+        typeWriter("ACCESSING COUNCIL REGISTRY... \n- WHISKERS-01 [STATUS: ACTIVE]\n- HERRING-AFK-01 [STATUS: INACTIVE]\n- UNKNOWN-03 [STATUS: OMEGA]", "response");
         return;
     }
 
     let responseText = "Request forwarded to the appropriate department.";
-
-    // Check obfuscated keys
     for (const [key, value] of Object.entries(keys)) {
-        if (q.includes(atob(key))) {
+        if (qLower.includes(atob(key))) {
             responseText = value;
             break;
         }
     }
-
     typeWriter(responseText, "response");
 }
 
-function triggerSystemCollapse() {
-    const body = document.getElementById("mainBody");
-    body.classList.add("system-collapse");
-    
-    typeWriter("CRITICAL ERROR: UNAUTHORIZED ACCESS TO FILE 2007_X.LOG... \n\n[FRAGMENT FOUND]: The water was not blue. The herring were not swimming. They were waiting.", "response");
-    
+function hardReset() {
+    const blackout = document.getElementById("blackout");
+    blackout.style.display = "block";
     setTimeout(() => {
-        body.classList.remove("system-collapse");
-        typeWriter("CONNECTION TERMINATED BY COUNCIL OVERSIGHT.", "response");
-    }, 5000);
+        blackout.style.display = "none";
+        document.getElementById("mainBody").classList.add("system-collapse");
+        typeWriter("SYSTEM REBOOTING... RECOVERING SECTOR 7...", "response");
+        setTimeout(() => {
+            document.getElementById("mainBody").classList.remove("system-collapse");
+            document.getElementById("notice").innerText = "> SYSTEM RECOVERY MODE ACTIVE";
+        }, 2000);
+    }, 3000);
+}
+
+function deepSeaMode() {
+    document.getElementById("mainBody").classList.add("deep-sea");
+    typeWriter("TUNING TO FREQUENCY 6062Hz... \n[SIGNAL FOUND]: 'The lake doesn't end. It just gets darker.'", "response");
+}
+
+function redactedClick() {
+    redactClicks++;
+    const red = document.getElementById("redact2007");
+    if (redactClicks === 1) typeWriter("Access Denied.", "response");
+    else if (redactClicks === 2) typeWriter("Warning: Unauthorized Retrieval Attempted.", "response");
+    else if (redactClicks >= 3) {
+        const flash = document.createElement("div");
+        flash.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:white; color:black; z-index:9999; display:flex; align-items:center; justify-content:center; font-size:3rem; font-weight:bold;";
+        flash.innerText = "THEY ARE STILL HERE";
+        document.body.appendChild(flash);
+        setTimeout(() => { document.body.removeChild(flash); }, 100);
+        typeWriter("Security Breach Detected. Logged.", "response");
+    }
 }
 
 function stampClick() {
     stampClicks++;
     const stamp = document.getElementById("topSecretStamp");
-    
     if (stampClicks === 3) {
         stamp.style.color = "#ff0000";
         stamp.innerText = "WARNING: ACCESSING...";
-    } else if (stampClicks === 5) {
+    } else if (stampClicks >= 5) {
         stamp.innerText = "BREACHED";
         stamp.style.backgroundColor = "#8b0000";
         stamp.style.color = "white";
-        typeWriter("SECURITY ALERT: Physical tampering detected on the TOP SECRET seal. Dispatching WHISKERS-01.", "response");
+        typeWriter("SECURITY ALERT: Physical tampering detected on the TOP SECRET seal.", "response");
     }
 }
 </script>
