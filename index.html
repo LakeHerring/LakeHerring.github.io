@@ -24,6 +24,7 @@
         margin: auto;
         padding: 30px;
         line-height: 1.6;
+        transition: filter 0.1s ease;
     }
 
     /* CRT Scanline Effect Overlay */
@@ -59,7 +60,12 @@
         transform: rotate(15deg);
         opacity: 0.6;
         font-size: 1.2rem;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease;
     }
+
+    .stamp:active { transform: rotate(15deg) scale(0.9); }
 
     h1 {
         font-size: 2.8rem;
@@ -93,7 +99,7 @@
     /* VIDEO FEED STYLING */
     .video-container {
         position: relative;
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        padding-bottom: 56.25%; 
         height: 0;
         overflow: hidden;
         border: 4px solid #2a2a2a;
@@ -106,7 +112,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        filter: grayscale(0.2) contrast(1.2); /* Makes YouTube look slightly more "analog" */
+        filter: grayscale(0.2) contrast(1.2);
     }
 
     .video-bezel {
@@ -240,16 +246,30 @@
         cursor: help;
     }
 
+    /* GLITCH ANIMATIONS */
+    @keyframes shake {
+        0% { transform: translate(0,0); }
+        25% { transform: translate(5px, -5px); }
+        50% { transform: translate(-5px, 5px); }
+        75% { transform: translate(5px, 5px); }
+        100% { transform: translate(0,0); }
+    }
+
+    .system-collapse {
+        animation: shake 0.1s infinite;
+        filter: invert(1) hue-rotate(90deg);
+    }
+
     @media (max-width: 700px) {
         .status-grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 
-<body>
+<body id="mainBody">
 
 <header>
-    <div class="stamp">TOP SECRET</div>
+    <div class="stamp" id="topSecretStamp" onclick="stampClick()">TOP SECRET</div>
     <h1>LAKE HERRING DEPARTMENT OF OPERATIONS</h1>
     <div class="subtitle">Restricted Fisheries Zone</div>
     <div class="subtitle">Established Under Authority of the Lake Accord</div>
@@ -264,7 +284,6 @@
     </div>
 </section>
 
-<!-- VISUAL INTELLIGENCE FEED -->
 <section>
     <h2>VISUAL INTELLIGENCE FEED</h2>
     <div class="video-bezel">
@@ -273,7 +292,6 @@
             <span>STATUS: <span style="color:#0f0">STREAMING</span></span>
         </div>
         <div class="video-container">
-            <!-- Your validated YouTube Embed integrated here -->
             <iframe src="https://www.youtube-nocookie.com/embed/QWfk1C0DM6g?si=Kz-IoiFhqecJ50N-" 
                     title="YouTube video player" frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -342,19 +360,34 @@
 </footer>
 
 <script>
-const notices = [
-    "Historical records regarding the 2007 Incident remain sealed.",
-    "Council Representative WHISKERS-01 remains active.",
-    "Strategic inactivity protocol has been authorized.",
-    "Jurisdictional concerns remain ongoing.",
-    "No herring has been secured. This was anticipated.",
-    "Border tensions remain elevated.",
-    "Unauthorized fish discourse will be reviewed.",
-    "Subterranean retrieval operations are currently underway.",
-    "The Lake Accord remains legally binding."
-];
+// Base64 encoded keywords to prevent easy inspection (Ctrl+U)
+// "lake herring", "2007", "fish", "cat", "why", "what"
+const keys = {
+    "bGFrZSBoZXJyaW5n": "Jurisdictional concerns.",
+    "MjAwNw==": "Historical records remain sealed.",
+    "ZmlzaA==": "Legacy compliance with fisheries doctrine.",
+    "Y2F0": "Council oversight authorized. Please step away from the terminal.",
+    "d2h5": "Further questioning is discouraged for your own safety.",
+    "d2hhdA==": "Clearance level insufficient."
+};
+
+// The Secret Sequence Base64 ("lake herring 2007 fish cat why what")
+const SECRET_SEQUENCE = "bGFrZSBoZXJyaW5nIDIwMDcgZmlzaCBjYXQgd2h5IHdoYXQ=";
+
+let stampClicks = 0;
 
 function rotateNotice() {
+    const notices = [
+        "Historical records regarding the 2007 Incident remain sealed.",
+        "Council Representative WHISKERS-01 remains active.",
+        "Strategic inactivity protocol has been authorized.",
+        "Jurisdictional concerns remain ongoing.",
+        "No herring has been secured. This was anticipated.",
+        "Border tensions remain elevated.",
+        "Unauthorized fish discourse will be reviewed.",
+        "Subterranean retrieval operations are currently underway.",
+        "The Lake Accord remains legally binding."
+    ];
     const random = notices[Math.floor(Math.random() * notices.length)];
     document.getElementById("notice").innerText = `> ${random}`;
 }
@@ -367,7 +400,6 @@ function typeWriter(text, elementId) {
     element.innerHTML = ""; 
     let i = 0;
     const speed = 40;
-
     function type() {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
@@ -379,17 +411,52 @@ function typeWriter(text, elementId) {
 }
 
 function handleInput() {
-    let q = document.getElementById("question").value.toLowerCase();
+    let q = document.getElementById("question").value.toLowerCase().trim();
+    
+    // Check for Secret Sequence first
+    if (btoa(q) === SECRET_SEQUENCE) {
+        triggerSystemCollapse();
+        return;
+    }
+
     let responseText = "Request forwarded to the appropriate department.";
 
-    if(q.includes("lake herring")) responseText = "Jurisdictional concerns.";
-    else if(q.includes("2007")) responseText = "Historical records remain sealed.";
-    else if(q.includes("fish")) responseText = "Legacy compliance requirements.";
-    else if(q.includes("cat")) responseText = "Council oversight.";
-    else if(q.includes("why")) responseText = "Further questioning is discouraged.";
-    else if(q.includes("what")) responseText = "Clearance denied.";
+    // Check obfuscated keys
+    for (const [key, value] of Object.entries(keys)) {
+        if (q.includes(atob(key))) {
+            responseText = value;
+            break;
+        }
+    }
 
     typeWriter(responseText, "response");
+}
+
+function triggerSystemCollapse() {
+    const body = document.getElementById("mainBody");
+    body.classList.add("system-collapse");
+    
+    typeWriter("CRITICAL ERROR: UNAUTHORIZED ACCESS TO FILE 2007_X.LOG... \n\n[FRAGMENT FOUND]: The water was not blue. The herring were not swimming. They were waiting.", "response");
+    
+    setTimeout(() => {
+        body.classList.remove("system-collapse");
+        typeWriter("CONNECTION TERMINATED BY COUNCIL OVERSIGHT.", "response");
+    }, 5000);
+}
+
+function stampClick() {
+    stampClicks++;
+    const stamp = document.getElementById("topSecretStamp");
+    
+    if (stampClicks === 3) {
+        stamp.style.color = "#ff0000";
+        stamp.innerText = "WARNING: ACCESSING...";
+    } else if (stampClicks === 5) {
+        stamp.innerText = "BREACHED";
+        stamp.style.backgroundColor = "#8b0000";
+        stamp.style.color = "white";
+        typeWriter("SECURITY ALERT: Physical tampering detected on the TOP SECRET seal. Dispatching WHISKERS-01.", "response");
+    }
 }
 </script>
 
