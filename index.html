@@ -90,6 +90,43 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
+    /* VIDEO FEED STYLING */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        border: 4px solid #2a2a2a;
+        box-shadow: inset 0 0 20px #000;
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        filter: grayscale(0.2) contrast(1.2); /* Makes YouTube look slightly more "analog" */
+    }
+
+    .video-bezel {
+        background: #1a1a1a;
+        padding: 10px;
+        border: 2px solid var(--gold-dark);
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .video-label {
+        font-family: var(--terminal-font);
+        color: var(--gold-bright);
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+    }
+
     .status-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -227,6 +264,25 @@
     </div>
 </section>
 
+<!-- NEW SECTION: VISUAL INTELLIGENCE FEED -->
+<section>
+    <h2>VISUAL INTELLIGENCE FEED</h2>
+    <div class="video-bezel">
+        <div class="video-label">
+            <span>SOURCE: YT-SATELLITE-01</span>
+            <span>STATUS: <span style="color:#0f0">STREAMING</span></span>
+        </div>
+        <div class="video-container">
+            <!-- REPLACE THE ID 'VIDEO_ID' with your actual YouTube Video ID -->
+            <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=Lake_Herring" 
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+    <div style="margin-top: 15px; text-align: center;">
+        <a href="https://www.youtube.com/@Lake_Herring" target="_blank">ACCESS FULL ARCHIVE</a>
+    </div>
+</section>
+
 <section>
     <h2>OPERATIONAL STATUS</h2>
     <div class="status-grid">
@@ -304,12 +360,11 @@ function rotateNotice() {
 setInterval(rotateNotice, 5000);
 rotateNotice();
 
-// Typewriter effect function
 function typeWriter(text, elementId) {
     const element = document.getElementById(elementId);
     element.innerHTML = ""; 
     let i = 0;
-    const speed = 40; // milliseconds per character
+    const speed = 40;
 
     function type() {
         if (i < text.length) {
