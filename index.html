@@ -152,7 +152,7 @@
             <iframe src="https://www.youtube-nocookie.com/embed/QWfk1C0DM6g?si=Kz-IoiFhqecJ50N-" 
                     title="YouTube video player" frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    referrerpolicy="strict-origin-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
     <div style="margin-top: 15px; text-align: center;">
@@ -208,18 +208,35 @@
 
 <script>
 /* 
-  ENCODED KEYS:
-  - "bGFrZSBoZXJyaW5n" (lake herring)
-  - "MjAwNw==" (2007)
-  - "ZmlzaA==" (fish)
-  - "Y2F0" (cat)
-  - "d2h5" (why)
-  - "d2hhdA==" (what)
-  - "S3dPaU5tTmxFaUNuVGdJLk8gTlTgaHRlRXlSIE13SWVuUmFlVCBFd0Rh" (The Scrambled String)
-  - "NjA2Mg==" (6062)
-  - "NzA=" (70)
+  AUDIO CONFIGURATION
+  Replace the URL with your actual GitHub RAW link: https://raw.githubusercontent.com/.../Ping.mp3
 */
+const PING_URL = "https://raw.githubusercontent.com/your-username/your-repo/main/Ping.mp3"; 
 
+let sonarAudio = null;
+
+function playNotification() {
+    const audio = new Audio(PING_URL);
+    audio.volume = 0.2; // Slightly louder for notifications
+    audio.play().catch(e => console.log("Audio blocked by browser until user interacts"));
+}
+
+function startSonarLoop() {
+    if (sonarAudio) return; // Don't start multiple loops
+    sonarAudio = new Audio(PING_URL);
+    sonarAudio.volume = 0.15; // Low volume for atmosphere
+    sonarAudio.loop = true;
+    sonarAudio.play().catch(e => console.log("Audio blocked until interaction"));
+}
+
+function stopAllAudio() {
+    if (sonarAudio) {
+        sonarAudio.pause();
+        sonarAudio = null;
+    }
+}
+
+// Base64 Encoded Keys
 const keys = {
     "bGFrZSBoZXJyaW5n": "Jurisdictional concerns.",
     "MjAwNw==": "Historical records remain sealed.",
@@ -230,8 +247,6 @@ const keys = {
 };
 
 const SECRET_SCRAMBLE = "S3dPaU5tTmxFaUNuVGdJLk8gTlTgaHRlRXlSIE13SWVuUmFlVCBFd0Rh";
-const CODE_6062 = "NjA2Mg==";
-const CODE_70 = "NzA=";
 
 let stampClicks = 0;
 let redactClicks = 0;
@@ -273,19 +288,16 @@ function handleInput() {
     let q = document.getElementById("question").value.trim();
     let qLower = q.toLowerCase();
     
-    // EASTER EGG: The Scrambled String (HARD RESET)
     if (btoa(q) === SECRET_SCRAMBLE) {
         hardReset();
         return;
     }
 
-    // EASTER EGG: 6062 / -6062 (DEEP SEA MODE)
     if (q === "6062" || q === "-6062") {
         deepSeaMode();
         return;
     }
 
-    // EASTER EGG: 70 (COUNCIL REGISTRY)
     if (q === "70") {
         typeWriter("ACCESSING COUNCIL REGISTRY... \n- WHISKERS-01 [STATUS: ACTIVE]\n- HERRING-AFK-01 [STATUS: INACTIVE]\n- UNKNOWN-03 [STATUS: OMEGA]", "response");
         return;
@@ -302,6 +314,7 @@ function handleInput() {
 }
 
 function hardReset() {
+    stopAllAudio(); // Kill the sonar on reset
     const blackout = document.getElementById("blackout");
     blackout.style.display = "block";
     setTimeout(() => {
@@ -316,11 +329,13 @@ function hardReset() {
 }
 
 function deepSeaMode() {
+    startSonarLoop(); // Start the atmospheric sonar
     document.getElementById("mainBody").classList.add("deep-sea");
     typeWriter("TUNING TO FREQUENCY 6062Hz... \n[SIGNAL FOUND]: 'The lake doesn't end. It just gets darker.'", "response");
 }
 
 function redactedClick() {
+    playNotification(); // Ping on click
     redactClicks++;
     const red = document.getElementById("redact2007");
     if (redactClicks === 1) typeWriter("Access Denied.", "response");
@@ -336,6 +351,7 @@ function redactedClick() {
 }
 
 function stampClick() {
+    playNotification(); // Ping on click
     stampClicks++;
     const stamp = document.getElementById("topSecretStamp");
     if (stampClicks === 3) {
