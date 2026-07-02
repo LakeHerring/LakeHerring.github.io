@@ -190,9 +190,22 @@ function typeWriter(text, elementId) {
     var i = 0;
     function type() {
         if (i < text.length) {
-            el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+            // Check if we are inside an HTML tag
+            if (text[i] === '<') {
+                var closingTag = text.indexOf('>', i);
+                if (closingTag !== -1) {
+                    el.innerHTML += text.substring(i, closingTag + 1);
+                    i = closingTag + 1;
+                    setTimeout(type, 1); // Burst through tags instantly
+                    return;
+                }
+            }
+            el.innerHTML += text[i] + '<span class="cursor"></span>';
             i++;
-            setTimeout(type, 40);
+            setTimeout(type, 30); // Slightly faster base speed (40ms -> 30ms)
+        } else {
+            // Final cursor placement
+            el.innerHTML = el.innerHTML.replace(/<span class="cursor"><\/span>$/g, '<span class="cursor"></span>');
         }
     }
     type();
