@@ -200,7 +200,7 @@ function typeWriter(text, elementId) {
                     return;
                 }
             }
-            el.innerHTML += text[i] + '<span class="cursor"></span>';
+            el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
             i++;
             setTimeout(type, 30); // Slightly faster base speed (40ms -> 30ms)
         } else {
