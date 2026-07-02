@@ -26,14 +26,13 @@
         overflow: hidden;
     }
 
-    /* CRT Scanline Effect Overlay */
     body::before {
         content: " ";
         display: block;
         position: fixed;
         top: 0; left: 0; bottom: 0; right: 0;
         background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 0, 0.06));
         z-index: 10;
         background-size: 100% 4px, 3px 100%;
         pointer-events: none;
@@ -140,25 +139,58 @@
 </div>
 
 <script>
+/* ╔══════════════════════════════════════════════╗
+   ║  CLASSIFIED — Pattern Recognition Required   ║
+   ║  "The numbers mean nothing until you shift    ║
+   ║   them by where they live."                   ║
+   ╚══════════════════════════════════════════════╝ */
 
-const keys = {
-    "bGFrZSBoZXJyaW5n": "Jurisdictional concerns.",
-    "d2h5": "Further questioning is discouraged for your own safety.",
-    "d2hhdA==": "Clearance level insufficient. Request denied.",
-    "MjAwNw==": "Historical records remain sealed.",
-    "Y2F0": "Council oversight authorized. Please step away from the terminal.",
-    "ZmlzaA==": "Legacy compliance requirements."
-};
+// Each entry: [ response_string, [position-shifted_codes...] ]
+// Recover the trigger word by reversing 3 chained encodings:
+//   (1) subtract index from each number → base64 char codes
+//   (2) String.fromCharCode → base64 literal
+//   (3) atob() → keyword
+var _ = [
+  ["Jurisdictional concerns.",
+    [98,72,72,117,94,88,72,118,98,97,84,132,109,100,67,125]],
+  ["Further questioning is discouraged for your own safety.",
+    [100,51,106,56]],
+  ["Clearance level insufficient. Request denied.",
+    [100,51,106,107,104,70,67,68]],
+  ["Historical records remain sealed.",
+    [77,107,67,122,82,124,67,68]],
+  ["Council oversight authorized. Please step away from the terminal.",
+    [89,51,72,51]],
+  ["Legacy compliance requirements.",
+    [90,110,110,125,101,70,67,68]],
+  ["Streaming protocols require Level-7 authorization. Access the live frequency here: <a href='https://kick.com/lakeherring' target='_blank' style='color: var(--gold-bright); text-decoration: underline;'>[Freq-Link]</a> Your signal has been logged.",
+    [99,52,84,124,94,92,76,123]],
+  ["Budget proposals are under inter-departmental review. Allocation for ops can be processed via the secure conduit: <a href='https://streamelements.com/lakeherring/tip' target='_blank' style='color: var(--gold-bright); text-decoration: underline;'>[Secure-Conduit]</a> No disbursement before fiscal audit.",
+    [90,111,88,120,94,76,114,124,98,128,71,72]]
+];
+
+// ── Build keyword→response map at runtime ──
+var KB = {};
+
+for (var e = 0; e < _.length; e++) {
+    var codes = _[e][1];
+    // Remove position-based shift → recover base64 char codes
+    var b64 = "";
+    for (var i = 0; i < codes.length; i++) {
+        b64 += String.fromCharCode(codes[i] - i);
+    }
+    // Decode base64 → trigger keyword
+    var key = atob(b64).toLowerCase();
+    KB[key] = _[e][0];
+}
 
 function typeWriter(text, elementId) {
-    const element = document.getElementById(elementId);
-    // Keep the cursor visible but clear text
-    element.innerHTML = ""; 
-    let i = 0;
-    
+    var el = document.getElementById(elementId);
+    el.innerHTML = "";
+    var i = 0;
     function type() {
         if (i < text.length) {
-            element.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+            el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
             i++;
             setTimeout(type, 40);
         }
@@ -167,30 +199,24 @@ function typeWriter(text, elementId) {
 }
 
 function handleInput() {
-    const inputField = document.getElementById("question");
-    let q = inputField.value.toLowerCase().trim();
-    
+    var inputField = document.getElementById("question");
+    var q = inputField.value.toLowerCase().trim();
     if (q === "") return;
 
-    let responseText = "Request forwarded to the appropriate department. No immediate answer available.";
-
-    // Iterate through Base64 keys and check if decoded key is in user input
-    for (const [encodedKey, value] of Object.entries(keys)) {
-        if (q.includes(atob(encodedKey))) {
-            responseText = value;
+    var hit = "Request forwarded to the appropriate department. No immediate answer available.";
+    for (var key in KB) {
+        if (KB.hasOwnProperty(key) && q.includes(key)) {
+            hit = KB[key];
             break;
         }
     }
 
-    typeWriter(responseText, "response");
-    inputField.value = ""; // Clear input after submission
+    typeWriter(hit, "response");
+    inputField.value = "";
 }
 
-// Allow pressing "Enter" to submit
-document.getElementById("question").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        handleInput();
-    }
+document.getElementById("question").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") handleInput();
 });
 </script>
 
