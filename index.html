@@ -1,194 +1,447 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LH-OPS Terminal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LH-OPS | Central Command</title>
 
-<style>
-    :root {
-        --bg-dark: #0a0f0a;
-        --gold-bright: #f2df9f;
-        --gold-muted: #d8c68c;
-        --gold-dark: #75663a;
-        --terminal-font: 'Courier New', Courier, monospace;
-    }
+    <style>
+        :root {
+            --bg-dark: #0a0f0a;
+            --gold-bright: #f2df9f;
+            --gold-muted: #d8c68c;
+            --gold-dark: #75663a;
+            --terminal-font: 'Courier New', Courier, monospace;
+            --paper-bg: #e0d8c3;
+            --paper-text: #2b2b2b;
+            --email-bg: #c0c0c0; /* Classic Windows grey */
+            --email-border: #808080;
+        }
 
-    body {
-        background: radial-gradient(circle, #1a261d 0%, #0a0f0a 100%);
-        color: var(--gold-muted);
-        font-family: var(--terminal-font);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        overflow: hidden;
-    }
+        body {
+            background: radial-gradient(circle, #1a261d 0%, #0a0f0a 100%);
+            color: var(--gold-muted);
+            font-family: var(--terminal-font);
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-    body::before {
-        content: " ";
-        display: block;
-        position: fixed;
-        top: 0; left: 0; bottom: 0; right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 0, 0.06));
-        z-index: 10;
-        background-size: 100% 4px, 3px 100%;
-        pointer-events: none;
-    }
+        /* --- CRT Overlay --- */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 0, 0.06));
+            z-index: 100;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
 
-    #terminal-container {
-        width: 90%;
-        max-width: 600px;
-        background: #050805;
-        border: 2px solid var(--gold-dark);
-        box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px black;
-        padding: 30px;
-        position: relative;
-        z-index: 1;
-    }
+        #ops-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--gold-dark);
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            z-index: 50;
+            color: var(--gold-bright);
+            text-transform: uppercase;
+        }
 
-    .terminal-header {
-        text-align: center;
-        color: var(--gold-bright);
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--gold-dark);
-        padding-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
+        .view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .view.active { display: flex; }
 
-    .input-area {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
+        /* --- Terminal Styles --- */
+        #terminal-container {
+            width: 90%;
+            max-width: 700px;
+            background: #050805;
+            border: 2px solid var(--gold-dark);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px black;
+            padding: 30px;
+        }
 
-    .input-box {
-        flex-grow: 1;
-        background: #000;
-        border: 1px solid var(--gold-dark);
-        color: var(--gold-bright);
-        padding: 12px;
-        font-family: var(--terminal-font);
-        outline: none;
-    }
+        .terminal-header {
+            text-align: center;
+            color: var(--gold-bright);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gold-dark);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-    .input-box:focus {
-        border-color: var(--gold-bright);
-    }
+        .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-box {
+            flex-grow: 1;
+            background: #000;
+            border: 1px solid var(--gold-dark);
+            color: var(--gold-bright);
+            padding: 12px;
+            font-family: var(--terminal-font);
+            outline: none;
+        }
 
-    button {
-        background: var(--gold-dark);
-        border: none;
-        color: #000;
-        padding: 0 20px;
-        cursor: pointer;
-        font-weight: bold;
-        font-family: var(--terminal-font);
-        text-transform: uppercase;
-        transition: background 0.3s ease;
-    }
+        button {
+            background: var(--gold-dark);
+            border: none;
+            color: #000;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: var(--terminal-font);
+            text-transform: uppercase;
+        }
 
-    button:hover {
-        background: var(--gold-bright);
-    }
+        .response-area {
+            background: black;
+            border-left: 4px solid var(--gold-dark);
+            color: var(--gold-bright);
+            padding: 20px;
+            min-height: 150px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
 
-    .response-area {
-        background: black;
-        border-left: 4px solid var(--gold-dark);
-        color: var(--gold-bright);
-        padding: 20px;
-        min-height: 100px;
-        font-size: 1.1rem;
-        line-height: 1.5;
-    }
+        /* --- Document Styles --- */
+        .document {
+            background-color: var(--paper-bg);
+            color: var(--paper-text);
+            width: 80%;
+            max-width: 800px;
+            height: 85vh;
+            padding: 60px;
+            box-shadow: 10px 10px 0px #000;
+            overflow-y: auto;
+            border: 1px solid #999;
+        }
 
-    .cursor {
-        display: inline-block;
-        width: 10px;
-        height: 20px;
-        background: var(--gold-bright);
-        animation: blink 1s infinite;
-        vertical-align: middle;
-    }
+        .doc-header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 30px; }
+        .doc-title { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; }
 
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
-    }
-</style>
+        /* Redaction Effect */
+        .redacted {
+            background-color: #000;
+            color: #000;
+            cursor: help;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        .redacted:hover { background-color: transparent; color: #d00; }
+
+        /* --- Email Client Styles --- */
+        #email-client {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            background: var(--email-bg);
+            border: 3px solid #fff;
+            box-shadow: 5px 5px 0px #000;
+            display: flex;
+            color: black;
+            font-family: 'Tahoma', sans-serif; /* Change font for email feel */
+        }
+
+        .email-sidebar {
+            width: 30%;
+            border-right: 2px solid var(--email-border);
+            background: #d0d0d0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            background: #808080;
+            color: white;
+            padding: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .email-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--email-border);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .email-item:hover { background: #bbb; }
+        .email-item.active { background: #4a90e2; color: white; }
+
+        .email-content {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 20px;
+        }
+
+        .email-meta {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .email-body {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* Modal/Gate */
+        #security-gate {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal {
+            background: #1a1a1a;
+            border: 3px solid red;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            max-width: 500px;
+        }
+
+        .cursor { display: inline-block; width: 10px; height: 20px; background: var(--gold-bright); animation: blink 1s infinite; vertical-align: middle; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+    </style>
 </head>
-<body>
+<body onload="init()">
 
-<div id="terminal-container">
-    <div class="terminal-header">
-        Lake Herring Dept. of Ops // Inquiry Terminal v4.2
-    </div>
-    
-    <div class="input-area">
-        <input id="question" class="input-box" placeholder="Enter request for review..." autocomplete="off">
-        <button onclick="handleInput()">Submit</button>
-    </div>
+<div id="ops-status">STATUS: INITIALIZING...</div>
 
-    <div id="response" class="response-area">
-        LAKE HERRING DEPARTMENT OF OPERATIONS. Establishing secure connection... Authenticating civilian access... WARNING: Historical records partially compromised. Terminal access granted. Awaiting inquiry...<span class="cursor"></span>
+<!-- TERMINAL VIEW -->
+<div id="view-terminal" class="view active">
+    <div id="terminal-container">
+        <div class="terminal-header">Lake Herring Dept. of Ops // Inquiry Terminal v4.2</div>
+        <div class="input-area">
+            <input id="question" class="input-box" placeholder="Enter request for review..." autocomplete="off">
+            <button onclick="handleInput()">Submit</button>
+        </div>
+        <div id="response" class="response-area">
+            LAKE HERRING DEPARTMENT OF OPERATIONS. Authenticating... Awaiting inquiry...<span class="cursor"></span>
+        </div>
+    </div>
+</div>
+
+<!-- PERSONNEL VIEW -->
+<div id="view-personnel" class="view">
+    <div class="document">
+        <div class="doc-header"><div class="doc-title">Personnel Directory [Classified]</div></div>
+        <p><strong>Active Operatives:</strong></p>
+        <ul>
+            <li><strong>Streamer Name</strong> - Assistant Deputy Director of Subterranean Resource Logistics & Inactivity Oversight.</li>
+            <li><strong>Agent 09</strong> - Senior Consultant for Crustacean Diplomatic Relations (Gemstone Division).</li>
+            <li><strong>The Archivist</strong> - Lead Coordinator of Redundant Paperwork and Ink Conservation.</li>
+            <li><strong>Operative X</strong> - <span class="redacted">Actually just three cats in a trench coat</span> Specialist in Stealth & Napping.</li>
+        </ul>
+        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
+    </div>
+</div>
+
+<!-- ACCORD VIEW -->
+<div id="view-accord" class="view">
+    <div class="document">
+        <div class="doc-header"><div class="doc-title">The Lake Accord (Treaty 88-B)</div></div>
+        <p><em>Binding agreement between all recognized aquatic and semi-aquatic entities.</em></p>
+        <p><strong>Clause 14.b:</strong> All parties agree that the movement of Gemstone Crabs shall be considered a matter of national security.</p>
+        <p><strong>Clause 22.c:</strong> <span class="redacted">The Council knows you are reading this and they find it amusing</span> This clause has been redacted.</p>
+        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
+    </div>
+</div>
+
+<!-- FORMS VIEW -->
+<div id="view-forms" class="view">
+    <div class="document">
+        <div class="doc-header"><div class="doc-title">Official Forms Archive</div></div>
+        <p>Submit in triplicate:</p>
+        <hr>
+        <p><strong>Form LH-102:</strong> Request for Temporary Strategic Inactivity (AFK).</p>
+        <p><strong>Form LH-99:</strong> Report of Unsanctioned Herring Sighting.</p>
+        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
+    </div>
+</div>
+
+<!-- EMAIL VIEW -->
+<div id="view-mail" class="view">
+    <div id="email-client">
+        <div class="email-sidebar" id="email-list">
+            <div class="sidebar-header">INBOX - Dept. of Ops</div>
+            <!-- Emails injected by JS -->
+        </div>
+        <div class="email-content" id="email-display">
+            <div style="text-align: center; margin-top: 50px; color: #888;">Select a message to read</div>
+        </div>
+    </div>
+    <button onclick="showView('view-terminal')" style="position: absolute; bottom: 20px; right: 20px;">Return to Terminal</button>
+</div>
+
+<!-- SECURITY GATE -->
+<div id="security-gate">
+    <div class="modal">
+        <h2>⚠️ RESTRICTED ACCESS</h2>
+        <p>You are attempting to access a Restricted Fisheries Zone document. Do you accept the terms of the Lake Accord?</p>
+        <div style="display:flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button onclick="resolveGate(true)">I ACCEPT</button>
+            <button onclick="resolveGate(true)">I ACCEPT (WITH RESERVATIONS)</button>
+        </div>
     </div>
 </div>
 
 <script>
-/* ╔══════════════════════════════════════════════╗
-   ║  CLASSIFIED — Pattern Recognition Required   ║
-   ║  "The numbers mean nothing until you shift    ║
-   ║   them by where they live."                   ║
-   ╚══════════════════════════════════════════════╝ */
+/* --- CONFIG & DATA --- */
+let userLevel = 1;
+let pendingView = null;
+const SECRET_PASSWORD = "HERRING77";
+const REDACTION_MAP = {
+    "█████": "The Council is actually just three cats in a trench coat",
+    "SECRET": "The password for Level 2 is HERRING77"
+};
 
-// Each entry: [ response_string, [position-shifted_codes...] ]
-// Recover the trigger word by reversing 3 chained encodings:
-//   (1) subtract index from each number → base64 char codes
-//   (2) String.fromCharCode → base64 literal
-//   (3) atob() → keyword
-var _ = [
-  ["Jurisdictional concerns.",
-    [98,72,72,117,94,88,72,118,98,97,84,132,109,100,67,125]],
-  ["Further questioning is discouraged for your own safety.",
-    [100,51,106,56]],
-  ["Clearance level insufficient. Request denied.",
-    [100,51,106,107,104,70,67,68]],
-  ["Historical records remain sealed.",
-    [77,107,67,122,82,124,67,68]],
-  ["Council oversight authorized. Please step away from the terminal.",
-    [89,51,72,51]],
-  ["Legacy compliance requirements.",
-    [90,110,110,125,101,70,67,68]],
-    ["Solar authorization recognized. Children remain compliant. Praise remains mandatory.",
-    [99, 52, 88, 120]],
-    ["Lunar instability detected. Peril remains unavoidable. Balance has shifted.",
-    [98, 88, 59, 121]],
-    ["Solar and lunar convergence detected. Cross-departmental containment procedures initiated. Historical precedent unavailable.",
-    [90, 88, 80, 118, 101, 93, 72, 129, 98, 90, 71, 72]],
-  ["Streaming protocols require Level-7 authorization. Access the live frequency here: <a href='https://kick.com/lakeherring' target='_blank' style='color: var(--gold-bright); text-decoration: underline;'>[Freq-Link]</a> Your signal has been logged.",
-    [99,52,84,124,94,92,76,123]],
-  ["Budget proposals are under inter-departmental review. Allocation for ops can be processed via the secure conduit: <a href='https://streamelements.com/lakeherring/tip' target='_blank' style='color: var(--gold-bright); text-decoration: underline;'>[Secure-Conduit]</a> No disbursement before fiscal audit.",
-    [90,111,88,120,94,76,114,124,98,128,71,72]]
+const OPERATIONAL_STATUSES = [
+    "OPERATION: GEMSTONE CRAB - PHASE 4 [STAGNANT]",
+    "RESOURCE REDISTRIBUTION (BANKING) - IN PROGRESS",
+    "BUREAUCRATIC FILING - PENDING APPROVAL",
+    "MONITORING AQUATIC ANOMALIES - STABLE"
 ];
 
-// ── Build keyword→response map at runtime ──
-var KB = {};
+// Email Database
+const EMAIL_DB = [
+    {
+        id: 0,
+        from: "Admin (Bronze Wing)",
+        subject: "RE: Missing Stapler",
+        date: "Oct 12, 1994",
+        body: "To whom it may concern,\n\nThe red Swingline stapler from Desk 4 has been missing for three days. If found, please return it immediately. Failure to do so will result in a formal reprimand and the loss of coffee privileges for the entire wing.",
+        requiredLevel: 1
+    },
+    {
+        id: 1,
+        from: "Field Agent 09",
+        subject: "Observation Report: Crab Behavior",
+        date: "Nov 02, 1994",
+        body: "Director,\n\nThe Gemstone Crabs are exhibiting signs of coordination. I observed three of them forming a perfect triangle around the north pillar today. It looked... intentional.\n\nRequesting more budget for bubble-monitoring equipment.",
+        requiredLevel: 1
+    },
+    {
+        id: 2,
+        from: "The Director (SENSITIVE)",
+        subject: "PROJECT: TRENCHCOAT",
+        date: "Dec 01, 1994",
+        body: "[CLASSIFIED]\n\nThe experiment is a success. The public believes the Council consists of highly trained bureaucrats. As long as no one looks under the oversized trench coat, our secret remains safe.\n\nDo NOT let the cats get hungry during the summit.",
+        requiredLevel: 2
+    },
+    {
+        id: 3,
+        from: "HR Department",
+        subject: "Mandatory Fun Day",
+        date: "Jan 15, 1995",
+        body: "Reminder: Mandatory Fun Day is this Friday. Attendance is compulsory. Failure to have 'fun' will be noted in your permanent file.",
+        requiredLevel: 1
+    }
+];
 
+var _ = [
+  ["Jurisdictional concerns.", [98,72,72,117,94,88,72,118,98,97,84,132,109,100,67,125]],
+  ["Further questioning is discouraged for your own safety.", [100,51,106,56]],
+  ["Clearance level insufficient. Request denied.", [100,51,106,107,104,70,67,68]],
+  ["Streaming protocols: <a href='https://kick.com/lakeherring' target='_blank' style='color: var(--gold-bright);'>[Freq-Link]</a>", [99,52,84,124,94,92,76,123]],
+  ["Budget proposals: <a href='https://streamelements.com/lakeherring/tip' target='_blank' style='color: var(--gold-bright);'>[Secure-Conduit]</a>", [90,111,88,120,94,76,114,124,98,128,71,72]]
+];
+
+const Level2KB = {
+    "conspiracy": "The Bronze Wing is not a building; it is a sentient filing cabinet.",
+    "leak": "The Gemstone Crabs are communicating via Morse code through the bubbles."
+};
+
+var KB = {};
 for (var e = 0; e < _.length; e++) {
     var codes = _[e][1];
-    // Remove position-based shift → recover base64 char codes
     var b64 = "";
-    for (var i = 0; i < codes.length; i++) {
-        b64 += String.fromCharCode(codes[i] - i);
-    }
-    // Decode base64 → trigger keyword
+    for (var i = 0; i < codes.length; i++) { b64 += String.fromCharCode(codes[i] - i); }
     var key = atob(b64).toLowerCase();
     KB[key] = _[e][0];
 }
+
+/* --- NAVIGATION & EMAIL LOGIC --- */
+
+function showView(viewId) {
+    const restrictedViews = ['view-accord', 'view-personnel'];
+    if (restrictedViews.includes(viewId)) {
+        pendingView = viewId;
+        document.getElementById('security-gate').style.display = 'flex';
+    } else {
+        if (viewId === 'view-mail') loadEmails();
+        activateView(viewId);
+    }
+}
+
+function resolveGate(accepted) {
+    document.getElementById('security-gate').style.display = 'none';
+    if (accepted && pendingView) activateView(pendingView);
+}
+
+function activateView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    pendingView = null;
+}
+
+function loadEmails() {
+    const listEl = document.getElementById('email-list');
+    listEl.innerHTML = '<div class="sidebar-header">INBOX - Dept. of Ops</div>';
+    
+    EMAIL_DB.forEach(mail => {
+        if (userLevel >= mail.requiredLevel) {
+            const item = document.createElement('div');
+            item.className = 'email-item';
+            item.innerHTML = `<strong>${mail.from}</strong><br>${mail.subject}`;
+            item.onclick = () => displayEmail(mail.id, item);
+            listEl.appendChild(item);
+        }
+    });
+}
+
+function displayEmail(id, element) {
+    const mail = EMAIL_DB.find(m => m.id === id);
+    const displayEl = document.getElementById('email-display');
+    
+    document.querySelectorAll('.email-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+
+    displayEl.innerHTML = `
+        <div class="email-meta">
+            <strong>From:</strong> ${mail.from}<br>
+            <strong>Date:</strong> ${mail.date}<br>
+            <strong>Subject:</strong> ${mail.subject}
+        </div>
+        <div class="email-body">${mail.body}</div>
+    `;
+}
+
+/* --- TERMINAL LOGIC --- */
 
 function typeWriter(text, elementId) {
     var el = document.getElementById(elementId);
@@ -196,21 +449,18 @@ function typeWriter(text, elementId) {
     var i = 0;
     function type() {
         if (i < text.length) {
-            // Check if we are inside an HTML tag
             if (text[i] === '<') {
                 var closingTag = text.indexOf('>', i);
                 if (closingTag !== -1) {
                     el.innerHTML += text.substring(i, closingTag + 1);
                     i = closingTag + 1;
-                    setTimeout(type, 1); // Burst through tags instantly
-                    return;
+                    setTimeout(type, 1); return;
                 }
             }
             el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
             i++;
-            setTimeout(type, 30); // Slightly faster base speed (40ms -> 30ms)
+            setTimeout(type, 30);
         } else {
-            // Final cursor placement
             el.innerHTML = el.innerHTML.replace(/<span class="cursor"><\/span>$/g, '<span class="cursor"></span>');
         }
     }
@@ -222,11 +472,51 @@ function handleInput() {
     var q = inputField.value.toLowerCase().trim();
     if (q === "") return;
 
+    if (Math.random() < 0.10) {
+        typeWriter("Request timed out. Your inquiry has been moved to the bottom of the queue due to an administrative filing error in the Bronze Wing.", "response");
+        inputField.value = ""; return;
+    }
+
+    if (q.startsWith('/login ')) {
+        let pass = q.split(' ')[1].toUpperCase();
+        if (pass === SECRET_PASSWORD) {
+            userLevel = 2;
+            typeWriter("ACCESS GRANTED. Clearance Level 2 authorized. Welcome, Director.", "response");
+        } else {
+            typeWriter("Invalid credentials. This attempt has been logged by Security.", "response");
+        }
+        inputField.value = ""; return;
+    }
+
+    if (q.startsWith('/declassify ')) {
+        let target = q.split(' ')[1];
+        let found = false;
+        for(let key in REDACTION_MAP) {
+            if(target === key || (target === "secret" && key === "SECRET")) {
+                typeWriter(`DECLASSIFIED: ${REDACTION_MAP[key]}`, "response");
+                found = true; break;
+            }
+        }
+        if(!found) typeWriter("Error: Redacted string not found in current database.", "response");
+        inputField.value = ""; return;
+    }
+
+    // Navigation Commands
+    if (q === '/personnel') { showView('view-personnel'); inputField.value=""; return; }
+    if (q === '/accord') { showView('view-accord'); inputField.value=""; return; }
+    if (q === '/forms') { showView('view-forms'); inputField.value=""; return; }
+    if (q === '/mail') { showView('view-mail'); inputField.value=""; return; }
+    if (q === '/exit') { showView('view-terminal'); inputField.value=""; return; }
+
     var hit = "Request forwarded to the appropriate department. No immediate answer available.";
-    for (var key in KB) {
-        if (KB.hasOwnProperty(key) && q.includes(key)) {
-            hit = KB[key];
-            break;
+    if (userLevel === 2) {
+        for (let key in Level2KB) {
+            if (q.includes(key)) { hit = `[LEVEL 2 SECRET]: ${Level2KB[key]}`; break; }
+        }
+    }
+    if (hit.startsWith("Request forwarded")) {
+        for (var key in KB) {
+            if (KB.hasOwnProperty(key) && q.includes(key)) { hit = KB[key]; break; }
         }
     }
 
@@ -234,9 +524,17 @@ function handleInput() {
     inputField.value = "";
 }
 
-document.getElementById("question").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") handleInput();
-});
+function init() {
+    setInterval(() => {
+        const statusEl = document.getElementById('ops-status');
+        const randomStatus = OPERATIONAL_STATUSES[Math.floor(Math.random() * OPERATIONAL_STATUSES.length)];
+        statusEl.innerText = `STATUS: ${randomStatus}`;
+    }, 5000);
+
+    document.getElementById("question").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") handleInput();
+    });
+}
 </script>
 
 </body>
