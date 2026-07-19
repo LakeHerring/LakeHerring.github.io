@@ -3,737 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LH-OPS | Central Command</title>
-
+    <title>FinHub | The Finest Fish on the Net</title>
     <style>
-           /* --- Boot Screen Overlay --- */
-        #boot-screen {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: #0a0f0a; 
-            z-index: 9999;
-            display: flex; 
-            flex-direction: column; 
-            /* CHANGED: Start from the top, not the center */
-            justify-content: flex-start; 
-            /* CHANGED: Align to the left edge, not the center */
-            align-items: flex-start; 
-            font-family: var(--terminal-font); 
-            color: var(--gold-muted);
-            /* Adds a small gap so text isn't touching the literal bezel of the screen */
-            padding: 30px; 
-            box-sizing: border-box;
+        /* CSS - THE HUB AESTHETIC */
+        :root {
+            --hub-black: #000000;
+            --hub-dark-grey: #1b1b1b;
+            --hub-accent: #008cff; 
+            --hub-text: #008cff;
+            --hub-light-grey: #cccccc;
         }
 
-        #boot-log {
-            /* CHANGED: Width is now based on content, not centered block */
-            width: auto; 
-            max-width: 90%; 
-            white-space: pre-wrap;
-            font-size: 0.9rem; 
-            line-height: 1.3; 
-            cursor: default; 
-            user-select: none;
-            /* STRICT LEFT ALIGNMENT */
-            text-align: left; 
-        }
-    
-        :root {
-            --bg-dark: #0a0f0a;
-            --gold-bright: #f2df9f;
-            --gold-muted: #d8c68c;
-            --gold-dark: #75663a;
-            --terminal-font: 'Courier New', Courier, monospace;
-            --paper-bg: #e0d8c3;
-            --paper-text: #2b2b2b;
-            --email-bg: #c0c0c0; /* Classic Windows grey */
-            --email-border: #808080;
+        html, body {
+            height: 100%;
+            margin: 0;
         }
 
         body {
-            background: radial-gradient(circle, #1a261d 0%, #0a0f0a 100%);
-            color: var(--gold-muted);
-            font-family: var(--terminal-font);
-            margin: 0;
-            height: 100vh;
-            overflow: hidden;
+            background-color: var(--hub-black);
+            color: var(--hub-text);
+            font-family: Arial, Helvetica, sans-serif;
             display: flex;
             flex-direction: column;
         }
 
-        /* --- CRT Overlay --- */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 0, 0.06));
-            z-index: 100;
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none;
-        }
-
-        /* --- Glitch Effect on Errors --- */
-        @keyframes glitch-skew {
-            0%, 100% { transform: skewX(0deg) scale(1); filter: none; }
-            10%      { transform: skewX(-2deg) scale(1.02, 0.98); filter: hue-rotate(90deg) brightness(1.3); }
-            25%      { transform: skewX(1deg) scale(0.98, 1.02); filter: invert(0.15) hue-rotate(-45deg); }
-            40%      { transform: skewX(-1.5deg) scale(1.01); filter: hue-rotate(180deg) saturate(3); }
-            60%      { transform: skewX(2deg) scale(0.99, 1.01); filter: brightness(0.7) contrast(2); }
-            80%      { transform: skewX(-0.5deg) scale(1.03); filter: hue-rotate(60deg); }
-        }
-        .glitch-active {
-            animation: glitch-skew 0.15s infinite !important;
-        }
-
-        .b-gold { color: var(--gold-bright); }
-        .b-ok { color: #5f5; }
-        .b-err { color: #f55; }
-        .b-hex { color: var(--gold-dark); font-size: 0.8rem; }
-
-        #ops-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--gold-dark);
-            padding: 5px 15px;
-            font-size: 0.8rem;
-            z-index: 50;
-            color: var(--gold-bright);
-            text-transform: uppercase;
-        }
-
-        .view {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            justify-content: center;
+        /* Header & Navigation */
+        header {
+            background-color: var(--hub-dark-grey);
+            padding: 10px 20px;
+            display: flex;
             align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #333;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            background-color: var(--hub-accent);
+            color: black;
+            padding: 2px 6px;
+            border-radius: 5px;
+            margin-left: 2px;
+        }
+
+        .search-bar {
+            display: flex;
+            flex-grow: 0.5;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #444;
+            background-color: #000;
+            color: white;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-bar button {
+            padding: 8px 15px;
+            background-color: var(--hub-accent);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 0 4px 4px 0;
+        }
+
+        nav {
+            background-color: #282828;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        nav a {
+            color: var(--hub-light-grey);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--hub-accent);
+        }
+
+        /* Content Grid */
+        .main-content {
+            flex: 1 0 auto; 
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--hub-dark-grey);
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
             position: relative;
         }
-        .view.active { display: flex; }
 
-        /* --- Terminal Styles --- */
-        #terminal-container {
-            width: 90%;
-            max-width: 700px;
-            background: #050805;
-            border: 2px solid var(--gold-dark);
-            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px black;
-            padding: 30px;
+        .card:hover {
+            transform: scale(1.03);
+            outline: 2px solid var(--hub-accent);
         }
 
-        .terminal-header {
-            text-align: center;
-            color: var(--gold-bright);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--gold-dark);
-            padding-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .thumbnail {
+            width: 100%;
+            height: 135px;
+            background-color: #333;
+            object-fit: cover;
         }
 
-        .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
-        .input-box {
-            flex-grow: 1;
-            background: #000;
-            border: 1px solid var(--gold-dark);
-            color: var(--gold-bright);
-            padding: 12px;
-            font-family: var(--terminal-font);
-            outline: none;
-        }
-
-        button {
-            background: var(--gold-dark);
-            border: none;
-            color: #000;
-            padding: 0 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: var(--terminal-font);
-            text-transform: uppercase;
-        }
-
-        .response-area {
-            background: black;
-            border-left: 4px solid var(--gold-dark);
-            color: var(--gold-bright);
-            padding: 20px;
-            min-height: 150px;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        /* --- Document Styles --- */
-        .document {
-            background-color: var(--paper-bg);
-            color: var(--paper-text);
-            width: 80%;
-            max-width: 800px;
-            height: 85vh;
-            padding: 60px;
-            box-shadow: 10px 10px 0px #000;
-            overflow-y: auto;
-            border: 1px solid #999;
-        }
-
-        .doc-header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 30px; }
-        .doc-title { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; }
-
-        /* Redaction Effect */
-        .redacted {
-            background-color: #000;
-            color: #000;
-            cursor: help;
-            transition: color 0.3s ease, background-color 0.3s ease;
-        }
-        .redacted:hover { background-color: transparent; color: #d00; }
-
-        /* --- Email Client Styles --- */
-        #email-client {
-            width: 90%;
-            max-width: 1000px;
-            height: 80vh;
-            background: var(--email-bg);
-            border: 3px solid #fff;
-            box-shadow: 5px 5px 0px #000;
-            display: flex;
-            color: black;
-            font-family: 'Tahoma', sans-serif; /* Change font for email feel */
-        }
-
-        .email-sidebar {
-            width: 30%;
-            border-right: 2px solid var(--email-border);
-            background: #d0d0d0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            background: #808080;
-            color: white;
-            padding: 5px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .email-item {
+        .card-info {
             padding: 10px;
-            border-bottom: 1px solid var(--email-border);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 65px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.8);
+            padding: 2px 5px;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+
+        footer {
+            flex-shrink: 0;
+            text-align: center;
+            padding: 40px;
+            color: #ffffff;
+            font-size: 12px;
+            background-color: var(--hub-dark-grey);
+        }
+
+        footer a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 5px;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s;
-        }
-        .email-item:hover { background: #bbb; }
-        .email-item.active { background: #4a90e2; color: white; }
-
-        .email-content {
-            width: 70%;
-            display: flex;
-            flex-direction: column;
-            background: white;
-            padding: 20px;
         }
 
-        .email-meta {
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            font-size: 0.9rem;
+        footer a:hover {
+            color: var(--hub-accent);
+            text-decoration: underline;
         }
 
-        .email-body {
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        /* Modal/Gate */
-        #security-gate {
+        /* Modals */
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 200;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
             justify-content: center;
             align-items: center;
-        }
-        .modal {
-            background: #1a1a1a;
-            border: 3px solid red;
-            padding: 40px;
-            text-align: center;
-            color: white;
-            max-width: 500px;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        /* --- Surveillance Badge --- */
-        #surveillance-badge {
-            position: fixed; top: 12px; left: 12px; z-index: 250;
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(0,0,0,0.85); border: 1px solid var(--gold-dark);
-            padding: 6px 14px; font-size: 0.72rem; color: var(--gold-muted);
-            font-family: var(--terminal-font); text-transform: uppercase;
-        }
-        #surveillance-badge .rec-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background: #f33; box-shadow: 0 0 6px #f33;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
-
-        /* --- Eye Tracker --- */
-        #eye-tracker {
-            position: fixed; bottom: 14px; right: 60px; z-index: 250;
-            display: flex; align-items: center; gap: 8px;
-            font-family: var(--terminal-font); font-size: 0.7rem; color: var(--gold-dark);
-        }
-        .eye-pair { position: relative; width: 44px; height: 22px; }
-        .eyeball {
-            position: absolute; left: 8px; top: 3px; width: 16px; height: 16px;
-            border-radius: 50%; background: var(--gold-muted); border: 2px solid #443a1a;
-        }
-        .pupil {
-            position: absolute; left: 5px; top: 4px; width: 6px; height: 6px;
-            border-radius: 50%; background: #000; pointer-events: none;
-            /* REMOVE transition: all 0.2s ease; */
+        #player img {
+            max-width: 80%;
+            border: 5px solid var(--hub-accent);
+            background-color: #333;
         }
 
-        /* --- Form LH-102 Styles --- */
-        .lh-form { max-width: 680px; margin: 30px auto; font-family: var(--terminal-font); color: var(--paper-text); }
-        .lh-form table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .lh-form td, .lh-form th { border: 1px solid #666; padding: 8px 10px; vertical-align: top; }
-        .lh-form th { background: #c4bca5; text-align: left; width: 160px; }
-        .lh-form input[type="text"], .lh-form textarea, .lh-form select {
-            width: 90%; background: transparent; border: none; border-bottom: 1px solid #333;
-            font-family: var(--terminal-font); font-size: 0.9rem; color: var(--paper-text); outline: none; padding: 4px 0;
+        .legal-content {
+            background: #1b1b1b;
+            padding: 30px;
+            border: 2px solid var(--hub-accent);
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+            color: #ccc;
+            line-height: 1.6;
+            font-family: 'Courier New', Courier, monospace;
         }
-        .lh-form textarea { height: 60px; resize: vertical; }
-        .lh-form .form-footer { text-align: center; margin-top: 30px; font-size: 0.78rem; color: #888; }
-        .lh-form button:hover { background: var(--gold-bright); }
 
-        .cursor { display: inline-block; width: 10px; height: 20px; background: var(--gold-bright); animation: blink 1s infinite; vertical-align: middle; }
-        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
-
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 30px;
+            color: white; font-size: 40px; cursor: pointer;
+        }
     </style>
 </head>
-<body onload="init()">
+<body>
 
-<!-- SURVEILLANCE BADGE -->
-<div id="surveillance-badge"><div class="rec-dot"></div> <span id="session-id"></span></div>
-
-<!-- EYE TRACKER -->
-<div id="eye-tracker">
-    <span>VISUAL MONITOR</span>
-    <div class="eye-pair"><div class="eyeball"><div class="pupil"></div></div></div>
-</div>
-
-<div id="ops-status">STATUS: INITIALIZING...</div>
-
-<!-- BOOT SCREEN OVERLAY -->
-<div id="boot-screen">
-    <div id="boot-log"></div>
-</div>
-
-<!-- TERMINAL VIEW -->
-<div id="view-terminal" class="view active">
-    <div id="terminal-container">
-        <div class="terminal-header">Lake Herring Dept. of Ops // Inquiry Terminal v4.2</div>
-        <div class="input-area">
-            <input id="question" class="input-box" placeholder="Enter request for review..." autocomplete="off">
-            <button onclick="handleInput()">Submit</button>
+    <header>
+        <a href="#" class="logo">Fin<span>Hub</span></a>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for fishy content..." onkeydown="handleSearchKey(event)" oninput="handleSearchInput()">
+            <button onclick="searchFish()">Search</button>
         </div>
-        <div id="response" class="response-area">
-            LAKE HERRING DEPARTMENT OF OPERATIONS. Authenticating... Awaiting inquiry...<span class="cursor"></span>
-        </div>
+        <div style="color: var(--hub-accent); font-weight: bold; cursor: pointer;">Upload Fin</div>
+    </header>
+
+    <nav>
+        <a href="#">Bottom Feeders</a>
+        <a href="#">Schooling</a>
+        <a href="#">Deep Sea</a>
+        <a href="#">Tropical</a>
+        <a href="#">Goldfish</a>
+        <a href="#">Verified Gills ✅</a>
+    </nav>
+
+    <div class="main-content">
+        <h2 id="category-title">Most Scaled Videos</h2>
+        <div class="video-grid" id="videoGrid"></div>
     </div>
-</div>
 
-<!-- PERSONNEL VIEW -->
-<div id="view-personnel" class="view">
-    <div class="document">
-        <div class="doc-header"><div class="doc-title">Personnel Directory [Classified]</div></div>
-        <p><strong>Active Operatives:</strong></p>
-        <ul>
-            <li><strong>Streamer Name</strong> - Assistant Deputy Director of Subterranean Resource Logistics & Inactivity Oversight.</li>
-            <li><strong>Agent 09</strong> - Senior Consultant for Crustacean Diplomatic Relations (Gemstone Division).</li>
-            <li><strong>The Archivist</strong> - Lead Coordinator of Redundant Paperwork and Ink Conservation.</li>
-            <li><strong>Operative X</strong> - <span class="redacted">Actually just three cats in a trench coat</span> Specialist in Stealth & Napping.</li>
-        </ul>
-        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
+    <footer>
+        &copy; 2026 FinHub.com - No Fish Were Harmed in the Making of this Website. <br><br>
+        <a onclick="openLegal('tos')">Terms of Service</a> | 
+        <a onclick="openLegal('privacy')">Privacy Policy</a> | 
+        <a onclick="openLegal('leak')">Report a Leak</a>
+    </footer>
+
+    <!-- Video Player Modal -->
+    <div id="player" class="modal" onclick="handleModalClick(event, 'player')">
+        <span class="close-btn" onclick="closeModal('player')">&times;</span>
+        <h2 id="playingTitle" style="color: var(--hub-accent);"></h2>
+        <img id="mainFishImage" src="" style="width: 600px;" onclick="event.stopPropagation()">
+        <p>Enjoying this fish? Rate it 5 fins! ⭐⭐⭐⭐⭐</p>
     </div>
-</div>
 
-<!-- ACCORD VIEW -->
-<div id="view-accord" class="view">
-    <div class="document">
-        <div class="doc-header"><div class="doc-title">The Lake Accord (Treaty 88-B)</div></div>
-        <p><em>Binding agreement between all recognized aquatic and semi-aquatic entities.</em></p>
-        <p><strong>Clause 14.b:</strong> All parties agree that the movement of Gemstone Crabs shall be considered a matter of national security.</p>
-        <p><strong>Clause 22.c:</strong> <span class="redacted">The Council knows you are reading this and they find it amusing</span> This clause has been redacted.</p>
-        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
+    <!-- Legal Modal -->
+    <div id="legalModal" class="modal" onclick="handleModalClick(event, 'legalModal')">
+        <span class="close-btn" onclick="closeModal('legalModal')">&times;</span>
+        <h2 id="legalTitle" style="color: var(--hub-accent);"></h2>
+        <div id="legalBody" class="legal-content"></div>
     </div>
-</div>
 
-<!-- FORMS VIEW -->
-<div id="view-forms" class="view">
-    <div class="document">
-        <div class="doc-header"><div class="doc-title">Official Forms Archive</div></div>
-        <p>Submit in triplicate:</p>
-        <hr>
-        <p><strong>Form LH-102:</strong> Request for Temporary Strategic Inactivity (AFK).</p>
-        <p><strong>Form LH-99:</strong> Report of Unsanctioned Herring Sighting.</p>
-        <button onclick="showView('view-terminal')" style="margin-top: 20px;">Return to Terminal</button>
-    </div>
-</div>
+    <script>
+        const fishDatabase = [
+            { title: "Huge Salmon Jump", views: "1.2M", duration: "0:15", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Salmon+Jump" },
+            { title: "Blobfish Being Relatable", views: "5.8M", duration: "1:02", category: "Deep Sea", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Relatable+Blobfish" },
+            { title: "Goldfish Forgot Something", views: "800K", duration: "0:05", category: "Goldfish", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Forgetful+Goldfish" },
+            { title: "Extreme Schooling Technique", views: "2.1M", duration: "3:45", category: "Schooling", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Schooling+Skills" },
+            { title: "Angelfish Showing Off Fins", views: "400K", duration: "2:10", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Fabulous+Fins" },
+            { title: "Catfish Bottom Feeding ASMR", views: "15M", duration: "10:00", category: "Bottom Feeders", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Catfish+ASMR" },
+            { title: "Pufferfish Inflation (Extreme)", views: "12M", duration: "0:30", category: "Deep Sea", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Inflated+Puffer" },
+            { title: "Betta Fish Aggression", views: "3.2M", duration: "1:15", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Angry+Betta" },
+        ];
 
-<!-- EMAIL VIEW -->
-<div id="view-mail" class="view">
-    <div id="email-client">
-        <div class="email-sidebar" id="email-list">
-            <div class="sidebar-header">INBOX - Dept. of Ops</div>
-            <!-- Emails injected by JS -->
-        </div>
-        <div class="email-content" id="email-display">
-            <div style="text-align: center; margin-top: 50px; color: #888;">Select a message to read</div>
-        </div>
-    </div>
-    <button onclick="showView('view-terminal')" style="position: absolute; bottom: 20px; right: 20px;">Return to Terminal</button>
-</div>
-
-<!-- SECURITY GATE -->
-<div id="security-gate">
-    <div class="modal">
-        <h2>⚠️ RESTRICTED ACCESS</h2>
-        <p>You are attempting to access a Restricted Fisheries Zone document. Do you accept the terms of the Lake Accord?</p>
-        <div style="display:flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button onclick="resolveGate(true)">I ACCEPT</button>
-            <button onclick="resolveGate(true)">I ACCEPT (WITH RESERVATIONS)</button>
-        </div>
-    </div>
-</div>
-
-<script>
-/* --- CONFIG & DATA --- */
-let userLevel = 1;
-let pendingView = null;
-const SECRET_PASSWORD = "HERRING77";
-const REDACTION_MAP = {
-    "█████": "The Council is actually just three cats in a trench coat",
-    "SECRET": "The password for Level 2 is HERRING77"
-};
-
-const OPERATIONAL_STATUSES = [
-    "OPERATION: GEMSTONE CRAB - PHASE 4 [STAGNANT]",
-    "RESOURCE REDISTRIBUTION (BANKING) - IN PROGRESS",
-    "BUREAUCRATIC FILING - PENDING APPROVAL",
-    "MONITORING AQUATIC ANOMALIES - STABLE"
-];
-
-const EMAIL_DB = [
-    { id: 0, from: "Admin (Bronze Wing)", subject: "RE: Missing Stapler", date: "Oct 12, 1994", body: "To whom it may concern,\n\nThe red Swingline stapler from Desk 4 has been missing for three days. If found, please return it immediately.", requiredLevel: 1 },
-    { id: 1, from: "Field Agent 09", subject: "Observation Report: Crab Behavior", date: "Nov 02, 1994", body: "Director,\n\nThe Gemstone Crabs are exhibiting signs of coordination. I observed three of them forming a perfect triangle.", requiredLevel: 1 },
-    { id: 2, from: "The Director (SENSITIVE)", subject: "PROJECT: TRENCHCOAT", date: "Dec 01, 1994", body: "[CLASSIFIED]\n\nThe experiment is a success. As long as no one looks under the oversized trench coat, our secret remains safe.", requiredLevel: 2 },
-    { id: 3, from: "HR Department", subject: "Mandatory Fun Day", date: "Jan 15, 1995", body: "Reminder: Mandatory Fun Day is this Friday. Attendance is compulsory.", requiredLevel: 1 }
-];
-
-var _ = [
-  ["Jurisdictional concerns.", [98,72,72,117,94,88,72,118,98,97,84,132,109,100,67,125]],
-  ["Further questioning is discouraged for your own safety.", [100,51,106,56]],
-  ["Clearance level insufficient. Request denied.", [100,51,106,107,104,70,67,68]],
-  ["Streaming protocols: <a href='https://kick.com/lakeherring' target='_blank' style='color: var(--gold-bright);'>[Freq-Link]</a>", [99,52,84,124,94,92,76,123]],
-  ["Budget proposals: <a href='https://streamelements.com/lakeherring/tip' target='_blank' style='color: var(--gold-bright);'>[Secure-Conduit]</a>", [90,111,88,120,94,76,114,124,98,128,71,72]]
-];
-
-const Level2KB = {
-    "conspiracy": "The Bronze Wing is not a building; it is a sentient filing cabinet.",
-    "leak": "The Gemstone Crabs are communicating via Morse code through the bubbles."
-};
-
-var KB = {};
-for (var e = 0; e < _.length; e++) {
-    var codes = _[e][1];
-    var b64 = "";
-    for (var i = 0; i < codes.length; i++) { b64 += String.fromCharCode(codes[i] - i); }
-    var key = atob(b64).toLowerCase();
-    KB[key] = _[e][0];
-}
-
-/* --- NAVIGATION & EMAIL LOGIC --- */
-
-function showView(viewId) {
-    const restrictedViews = ['view-accord', 'view-personnel'];
-    if (restrictedViews.includes(viewId)) {
-        pendingView = viewId;
-        document.getElementById('security-gate').style.display = 'flex';
-    } else {
-        if (viewId === 'view-mail') loadEmails();
-        activateView(viewId);
-    }
-}
-
-function resolveGate(accepted) {
-    document.getElementById('security-gate').style.display = 'none';
-    if (accepted && pendingView) activateView(pendingView);
-}
-
-function activateView(viewId) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-    pendingView = null;
-}
-
-function loadEmails() {
-    const listEl = document.getElementById('email-list');
-    listEl.innerHTML = '<div class="sidebar-header">INBOX - Dept. of Ops</div>';
-    EMAIL_DB.forEach(mail => {
-        if (userLevel >= mail.requiredLevel) {
-            const item = document.createElement('div');
-            item.className = 'email-item';
-            item.innerHTML = `<strong>${mail.from}</strong><br>${mail.subject}`;
-            item.onclick = () => displayEmail(mail.id, item);
-            listEl.appendChild(item);
-        }
-    });
-}
-
-function displayEmail(id, element) {
-    const mail = EMAIL_DB.find(m => m.id === id);
-    const displayEl = document.getElementById('email-display');
-    document.querySelectorAll('.email-item').forEach(i => i.classList.remove('active'));
-    element.classList.add('active');
-    displayEl.innerHTML = `<div class="email-meta"><strong>From:</strong> ${mail.from}<br><strong>Date:</strong> ${mail.date}<br><strong>Subject:</strong> ${mail.subject}</div><div class="email-body">${mail.body}</div>`;
-}
-
-/* --- TERMINAL LOGIC --- */
-
-function typeWriter(text, elementId) {
-    var el = document.getElementById(elementId);
-    el.innerHTML = "";
-    var i = 0;
-    function type() {
-        if (i < text.length) {
-            if (text[i] === '<') {
-                var closingTag = text.indexOf('>', i);
-                if (closingTag !== -1) {
-                    el.innerHTML += text.substring(i, closingTag + 1);
-                    i = closingTag + 1;
-                    setTimeout(type, 1); return;
-                }
+        const legalTexts = {
+            tos: {
+                title: "Terms of Scale-vice",
+                body: "1. By entering FinHub, you agree to be treated as a fish. <br><br> 2. You shall not attempt to cook any content found on this website.<br><br>3. We reserve the right to move your account to a different tank without notice.<br><br>4. Any disputes will be settled via bubble-blowing contest in the deep sea courts of Neptune."
+            },
+            privacy: {
+                title: "Privacy Policy (The Bubble Wall)",
+                body: "We value your privacy as much as a pufferfish values its air. <br><br> We do not store your data on hard drives; we etch it into coral reefs using tiny shrimp. <br><br> Your browsing history is shared only with the local school of tuna for quality assurance purposes. If you wish to be forgotten, please act like a goldfish and simply forget who you are."
+            },
+            leak: {
+                title: "Report a Leak",
+                body: "Is your tank springing a leak? Is there water where it shouldn't be? <br><br> Please report all leaks immediately to our Underwater Plumbing Department. Note: If the 'leak' is actually just your fish swimming too fast, that is not a bug; that is a feature of high-velocity fins."
             }
-            el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
-            i++;
-            setTimeout(type, 30);
-        } else {
-            el.innerHTML = el.innerHTML.replace(/<span class="cursor"><\/span>$/g, '<span class="cursor"></span>');
+        };
+
+        const grid = document.getElementById('videoGrid');
+
+        function renderVideos(filter = "") {
+            grid.innerHTML = "";
+            const filteredFish = fishDatabase.filter(f => f.title.toLowerCase().includes(filter.toLowerCase()));
+            
+            filteredFish.forEach((fish) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openPlayer(fish);
+                card.innerHTML = `
+                    <img src="${fish.img}" class="thumbnail">
+                    <div class="duration">${fish.duration}</div>
+                    <div class="card-info">
+                        <div class="card-title">${fish.title}</div>
+                        <div class="card-meta">${fish.views} views • ${fish.category}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
-    }
-    type();
-}
 
-function handleInput() {
-    var inputField = document.getElementById("question");
-    var q = inputField.value.toLowerCase().trim();
-    if (q === "") return;
-
-    if (Math.random() < 0.10) {
-        typeWriter("Request timed out. Your inquiry has been moved to the bottom of the queue due to an administrative filing error in the Bronze Wing.", "response");
-        inputField.value = ""; return;
-    }
-
-    if (q.startsWith('/login ')) {
-        let pass = q.split(' ')[1].toUpperCase();
-        if (pass === SECRET_PASSWORD) {
-            userLevel = 2;
-            typeWriter("ACCESS GRANTED. Clearance Level 2 authorized. Welcome, Director.", "response");
-        } else {
-            typeWriter("Invalid credentials. This attempt has been logged by Security.", "response");
-        }
-        inputField.value = ""; return;
-    }
-
-    if (q.startsWith('/declassify ')) {
-        let target = q.split(' ')[1];
-        let found = false;
-        for(let key in REDACTION_MAP) {
-            if(target === key || (target === "secret" && key === "SECRET")) {
-                typeWriter(`DECLASSIFIED: ${REDACTION_MAP[key]}`, "response");
-                found = true; break;
-            }
-        }
-        if(!found) typeWriter("Error: Redacted string not found in current database.", "response");
-        inputField.value = ""; return;
-    }
-
-    if (q === '/personnel') { showView('view-personnel'); inputField.value=""; return; }
-    if (q === '/accord') { showView('view-accord'); inputField.value=""; return; }
-    if (q === '/forms') { showView('view-forms'); inputField.value=""; return; }
-    if (q === '/mail') { showView('view-mail'); inputField.value=""; return; }
-    if (q === '/exit') { showView('view-terminal'); inputField.value=""; return; }
-
-    var hit = "Request forwarded to the appropriate department. No immediate answer available.";
-    if (userLevel === 2) {
-        for (let key in Level2KB) { if (q.includes(key)) { hit = `[LEVEL 2 SECRET]: ${Level2KB[key]}`; break; } }
-    }
-    if (hit.startsWith("Request forwarded")) {
-        for (var key in KB) { if (KB.hasOwnProperty(key) && q.includes(key)) { hit = KB[key]; break; } }
-    }
-
-    typeWriter(hit, "response");
-    inputField.value = "";
-    
-}
-
-function init() {
-    // Fix rendering of Session ID
-    document.getElementById('session-id').innerText = `LIVE / SESSION #${Math.floor(Math.random()*9000)+1000}`;
-
-    const bootLog = document.getElementById('boot-log');
-    
-    // --- BOOT SEQUENCE DATA ---
-    const BOOT_STAGES = [
-        {
-            name: "BIOS/UEFI",
-            delay: 400,
-            logs: [
-                { t: "LH-OPS System ROM v2.1.0 (c) 1994 Lake Herring Corp.", c: "b-gold" },
-                { t: "CPU: Bronze Wing Mainframe x86_64 @ 25MHz", c: "white" },
-                { t: "Memory Test: 640KB OK", c: "b-ok" },
-                { t: "Detecting storage devices...", c: "white" },
-                { t: "SATA 0: [GEMSTONE_DRIVE] - Sector 0x4F2A Found.", c: "b-ok" },
-                { t: "Loading GRUB bootloader...", c: "white" },
-            ]
-        },
-        {
-            name: "KERNEL",
-            delay: 50, // Fast scrolling
-            logs: [
-                { t: "[    0.000000] Linux version 4.2.0-LH (ops@bronze-wing) #1 SMP", c: "b-hex" },
-                { t: "[    0.000012] Memory: 65536K/65536K available", c: "b-hex" },
-                { t: "[    0.001542] Initializing Crab-Interface Driver...", c: "white" },
-                { t: "[    0.012981] Checking for unauthorized feline interference...", c: "white" },
-                { t: "[    0.025110] WARNING: 3 unexpected whiskers detected in Chassis B", c: "b-err" },
-                { t: "[    0.048221] Attempting to ignore cats... SUCCESS", c: "b-ok" },
-                { t: "[    0.110452] Mounting /dev/sda1 (The Lake Accord) on /mnt/treaties...", c: "white" },
-                { t: "[    0.259118] Initializing Subterranean Resource Logistics... DONE", c: "b-ok" },
-                { t: "[    0.410032] loading_module: bureaucracy.ko ... [OK]", c: "b-hex" },
-                { t: "[    0.582194] loading_module: ink_conservation.ko ... [OK]", c: "b-hex" },
-                { t: "[    0.721003] Loading cryptographic keys from Bronze Wing Vault...", c: "white" },
-            ]
-        },
-        {
-            name: "SERVICES",
-            delay: 800, // Slower, deliberate loading
-            logs: [
-                { t: "Starting System Log Daemon... [ OK ]", c: "b-ok" },
-                { t: "Initializing Department of Ops Directory... [ OK ]", c: "b-ok" },
-                { t: "Checking for Missing Staplers in Wing 4...", c: "white" },
-                { t: "ERROR: Red Swingline not found. Reporting to HR... [ FAILED ]", c: "b-err" },
-                { t: "Bypassing stapler requirement via Form LH-99... [ OK ]", c: "b-ok" },
-                { t: "Starting Surveillance Monitor (Eye-Track)... [ OK ]", c: "b-ok" },
-                { t: "Synchronizing with Gemstone Crab Colony Delta...", c: "white" },
-                { t: "Connection Stable. Protocol 88-B Active.", c: "b-ok" },
-            ]
-        },
-        {
-            name: "FINAL",
-            delay: 1200,
-            logs: [
-                { t: "--------------------------------------------------", c: "b-gold" },
-                { t: "LAKE HERRING OPERATIONS SYSTEM READY.", c: "b-gold" },
-                { t: "Welcome back, User. Please keep your eyes on the monitor.", c: "white" },
-            ]
-        }
-    ];
-
-    async function runBootSequence() {
-        for (const stage of BOOT_STAGES) {
-            for (const line of stage.logs) {
-                const span = document.createElement('div');
-                span.innerHTML = `<span class="${line.c}">${line.t}</span>`;
-                bootLog.appendChild(span);
-                // Auto-scroll to bottom if log gets too long
-                bootLog.scrollTop = bootLog.scrollHeight; 
-                await new Promise(resolve => setTimeout(resolve, stage.delay));
+        // Trigger search on Enter key
+        function handleSearchKey(event) {
+            if (event.key === "Enter") {
+                searchFish();
             }
         }
 
-        // Final fade out of the boot screen
-        setTimeout(() => {
-            const bootScreen = document.getElementById('boot-screen');
-            bootScreen.style.transition = "opacity 1s ease";
-            bootScreen.style.opacity = "0";
-            setTimeout(() => {
-                bootScreen.style.display = 'none';
-            }, 1000);
-        }, 1500);
-    }
+        // Reset to defaults when input is cleared
+        function handleSearchInput() {
+            const term = document.getElementById('searchInput').value;
+            if (term === "") {
+                renderVideos("");
+                document.getElementById('category-title').innerText = "Most Scaled Videos";
+            }
+        }
 
-    runBootSequence();
+        function searchFish() {
+            const term = document.getElementById('searchInput').value;
+            renderVideos(term);
+            document.getElementById('category-title').innerText = term ? `Search results for: ${term}` : "Most Scaled Videos";
+        }
 
-    // --- REST OF YOUR INIT CODE ---
-    setInterval(() => {
-        const statusEl = document.getElementById('ops-status');
-        const randomStatus = OPERATIONAL_STATUSES[Math.floor(Math.random() * OPERATIONAL_STATUSES.length)];
-        statusEl.innerText = `STATUS: ${randomStatus}`;
-    }, 5000);
+        // Video Modal Logic
+        function openPlayer(fish) {
+            document.getElementById('player').style.display = 'flex';
+            document.getElementById('playingTitle').innerText = fish.title;
+            document.getElementById('mainFishImage').src = fish.img;
+        }
 
-    document.getElementById("question").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") handleInput();
-    });
+        // Legal Modal Logic
+        function openLegal(type) {
+            const data = legalTexts[type];
+            document.getElementById('legalTitle').innerText = data.title;
+            document.getElementById('legalBody').innerHTML = data.body;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
 
-    let mouseX = 0, mouseY = 0;
-    let currentX = 0, currentY = 0;
-    const eyeEasing = 0.25;        // Snappiness (0.1 to 0.4)
-    const eyeMinDistance = 60;     // Prevents "wild dancing" when too close
-    const maxPupilOffset = 5;      // Max pixels the pupil can move
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
 
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
+        function handleModalClick(event, id) {
+            if (event.target.id === id) {
+                closeModal(id);
+            }
+        }
 
-    function animateEyes() {
-        const eyeballs = document.querySelectorAll('.eyeball');
-        eyeballs.forEach(eye => {
-            const pupil = eye.querySelector('.pupil');
-            const rect = eye.getBoundingClientRect();
-            const eyeX = rect.left + rect.width / 2;
-            const eyeY = rect.top + rect.height / 2;
-
-            const dx = mouseX - eyeX;
-            const dy = mouseY - eyeY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            // Distance clamping for consistent angular speed
-            const effectiveDx = dist < eyeMinDistance ? (dx / dist) * eyeMinDistance : dx;
-            const effectiveDy = dist < eyeMinDistance ? (dy / dist) * eyeMinDistance : dy;
-
-            const angle = Math.atan2(effectiveDy, effectiveDx);
-            const targetX = Math.cos(angle) * maxPupilOffset;
-            const targetY = Math.sin(angle) * maxPupilOffset;
-
-            // Lerp movement
-            currentX += (targetX - currentX) * eyeEasing;
-            currentY += (targetY - currentY) * eyeEasing;
-
-            pupil.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        });
-        requestAnimationFrame(animateEyes);
-    }
-    
-    animateEyes();
-}
-</script>
-
+        renderVideos();
+    </script>
 </body>
 </html>
