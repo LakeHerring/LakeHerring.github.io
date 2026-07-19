@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>FinHub | The Finest Fish on the Net</title>
     <style>
         /* CSS - THE HUB AESTHETIC */
@@ -14,11 +15,7 @@
             --hub-light-grey: #cccccc;
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
+        html, body { height: 100%; margin: 0; }
         body {
             background-color: var(--hub-black);
             color: var(--hub-text);
@@ -27,7 +24,6 @@
             flex-direction: column;
         }
 
-        /* Header & Navigation */
         header {
             background-color: var(--hub-dark-grey);
             padding: 10px 20px;
@@ -37,155 +33,32 @@
             border-bottom: 3px solid #333;
         }
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-        }
+        .logo { font-size: 28px; font-weight: bold; text-decoration: none; color: white; display: flex; align-items: center; }
+        .logo span { background-color: var(--hub-accent); color: black; padding: 2px 6px; border-radius: 5px; margin-left: 2px; }
 
-        .logo span {
-            background-color: var(--hub-accent);
-            color: black;
-            padding: 2px 6px;
-            border-radius: 5px;
-            margin-left: 2px;
-        }
+        .search-bar { display: flex; flex-grow: 0.5; margin: 0 20px; }
+        .search-bar input { width: 100%; padding: 8px; border: 1px solid #444; background-color: #000; color: white; border-radius: 4px 0 0 4px; }
+        .search-bar button { padding: 8px 15px; background-color: var(--hub-accent); border: none; cursor: pointer; font-weight: bold; border-radius: 0 4px 4px 0; }
 
-        .search-bar {
-            display: flex;
-            flex-grow: 0.5;
-            margin: 0 20px;
-        }
+        nav { background-color: #282828; padding: 10px 20px; display: flex; gap: 15px; font-size: 14px; }
+        nav a { color: var(--hub-light-grey); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--hub-accent); }
 
-        .search-bar input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #444;
-            background-color: #000;
-            color: white;
-            border-radius: 4px 0 0 4px;
-        }
+        .main-content { flex: 1 0 auto; padding: 20px; }
+        h2 { font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        .search-bar button {
-            padding: 8px 15px;
-            background-color: var(--hub-accent);
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 0 4px 4px 0;
-        }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        .card { background-color: var(--hub-dark-grey); border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; position: relative; }
+        .card:hover { transform: scale(1.03); outline: 2px solid var(--hub-accent); }
+        .thumbnail { width: 100%; height: 135px; background-color: #333; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .card-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-meta { font-size: 12px; color: #999; }
+        .duration { position: absolute; bottom: 65px; right: 10px; background-color: rgba(0,0,0,0.8); padding: 2px 5px; font-size: 11px; border-radius: 3px; }
 
-        nav {
-            background-color: #282828;
-            padding: 10px 20px;
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
-        }
+        footer { flex-shrink: 0; text-align: center; padding: 40px; color: #ffffff; font-size: 12px; background-color: var(--hub-dark-grey); }
+        footer a { color: #ffffff; text-decoration: none; margin: 0 5px; cursor: pointer; }
 
-        nav a {
-            color: var(--hub-light-grey);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        nav a:hover {
-            color: var(--hub-accent);
-        }
-
-        /* Content Grid */
-        .main-content {
-            flex: 1 0 auto; 
-            padding: 20px;
-        }
-
-        h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--hub-dark-grey);
-            border-radius: 5px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
-        }
-
-        .card:hover {
-            transform: scale(1.03);
-            outline: 2px solid var(--hub-accent);
-        }
-
-        .thumbnail {
-            width: 100%;
-            height: 135px;
-            background-color: #333;
-            object-fit: cover;
-        }
-
-        .card-info {
-            padding: 10px;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-meta {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .duration {
-            position: absolute;
-            bottom: 65px;
-            right: 10px;
-            background-color: rgba(0,0,0,0.8);
-            padding: 2px 5px;
-            font-size: 11px;
-            border-radius: 3px;
-        }
-
-        footer {
-            flex-shrink: 0;
-            text-align: center;
-            padding: 40px;
-            color: #ffffff;
-            font-size: 12px;
-            background-color: var(--hub-dark-grey);
-        }
-
-        footer a {
-            color: #ffffff;
-            text-decoration: none;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-
-        footer a:hover {
-            color: var(--hub-accent);
-            text-decoration: underline;
-        }
-
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -199,29 +72,17 @@
             box-sizing: border-box;
         }
 
-        #player img {
-            max-width: 80%;
+        #videoContainer {
             border: 5px solid var(--hub-accent);
-            background-color: #333;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(0,140,255,0.3);
         }
 
-        .legal-content {
-            background: #1b1b1b;
-            padding: 30px;
-            border: 2px solid var(--hub-accent);
-            max-width: 600px;
-            max-height: 70vh;
-            overflow-y: auto;
-            color: #ccc;
-            line-height: 1.6;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px; right: 30px;
-            color: white; font-size: 40px; cursor: pointer;
-        }
+        .legal-content { background: #1b1b1b; padding: 30px; border: 2px solid var(--hub-accent); max-width: 600px; color: #ccc; line-height: 1.6; }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -236,12 +97,7 @@
     </header>
 
     <nav>
-        <a href="#">Bottom Feeders</a>
-        <a href="#">Schooling</a>
-        <a href="#">Deep Sea</a>
-        <a href="#">Tropical</a>
-        <a href="#">Goldfish</a>
-        <a href="#">Verified Gills ✅</a>
+        <a href="#">Bottom Feeders</a> <a href="#">Schooling</a> <a href="#">Deep Sea</a> <a href="#">Tropical</a> <a href="#">Goldfish</a> <a href="#">Verified Gills ✅</a>
     </nav>
 
     <div class="main-content">
@@ -250,21 +106,17 @@
     </div>
 
     <footer>
-        &copy; 2026 FinHub.com - No Fish Were Harmed in the Making of this Website. <br><br>
-        <a onclick="openLegal('tos')">Terms of Service</a> | 
-        <a onclick="openLegal('privacy')">Privacy Policy</a> | 
-        <a onclick="openLegal('leak')">Report a Leak</a>
+        &copy; 2026 FinHub.com - No Fish Were Harmed. <br><br>
+        <a onclick="openLegal('tos')">Terms of Service</a> | <a onclick="openLegal('privacy')">Privacy Policy</a> | <a onclick="openLegal('leak')">Report a Leak</a>
     </footer>
 
-    <!-- Video Player Modal -->
     <div id="player" class="modal" onclick="handleModalClick(event, 'player')">
         <span class="close-btn" onclick="closeModal('player')">&times;</span>
-        <h2 id="playingTitle" style="color: var(--hub-accent);"></h2>
-        <img id="mainFishImage" src="" style="width: 600px;" onclick="event.stopPropagation()">
-        <p>Enjoying this fish? Rate it 5 fins! ⭐⭐⭐⭐⭐</p>
+        <h2 id="playingTitle" style="color: var(--hub-accent); margin-bottom: 15px;"></h2>
+        <div id="videoContainer" onclick="event.stopPropagation()"></div>
+        <p style="color: white; margin-top: 15px;">Enjoying this fish? Rate it 5 fins! ⭐⭐⭐⭐⭐</p>
     </div>
 
-    <!-- Legal Modal -->
     <div id="legalModal" class="modal" onclick="handleModalClick(event, 'legalModal')">
         <span class="close-btn" onclick="closeModal('legalModal')">&times;</span>
         <h2 id="legalTitle" style="color: var(--hub-accent);"></h2>
@@ -273,83 +125,78 @@
 
     <script>
         const fishDatabase = [
-            { title: "Huge Salmon Jump", views: "1.2M", duration: "0:15", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Salmon+Jump" },
-            { title: "Blobfish Being Relatable", views: "5.8M", duration: "1:02", category: "Deep Sea", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Relatable+Blobfish" },
-            { title: "Goldfish Forgot Something", views: "800K", duration: "0:05", category: "Goldfish", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Forgetful+Goldfish" },
-            { title: "Extreme Schooling Technique", views: "2.1M", duration: "3:45", category: "Schooling", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Schooling+Skills" },
-            { title: "Angelfish Showing Off Fins", views: "400K", duration: "2:10", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Fabulous+Fins" },
-            { title: "Catfish Bottom Feeding ASMR", views: "15M", duration: "10:00", category: "Bottom Feeders", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Catfish+ASMR" },
-            { title: "Pufferfish Inflation (Extreme)", views: "12M", duration: "0:30", category: "Deep Sea", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Inflated+Puffer" },
-            { title: "Betta Fish Aggression", views: "3.2M", duration: "1:15", category: "Tropical", img: "https://placeholdit.com/1200x630/dddddd/999999?text=Angry+Betta" },
+            { title: "B2B Barronite", views: "45K", duration: "0:30", category: "Deep Sea", id: "2libZ1QDQZc" },
+            { title: "What is that", views: "12K", duration: "0:15", category: "Bottom Feeders", id: "BDpMbbKnabE" },
+            { title: "A form of therapy", views: "89K", duration: "0:45", category: "Tropical", id: "oq-Eeuqj_b8" },
+            { title: "Thing I need in life", views: "102K", duration: "0:20", category: "Goldfish", id: "kfTZfYlCIfg" },
+            { title: "Accept The Call", views: "31K", duration: "0:50", category: "Schooling", id: "qJtVZ_bBiJM" },
+            { title: "Clint Herring", views: "77K", duration: "0:25", category: "Tropical", id: "Ll_Km3YnbQ4" },
+            { title: "Favorite Gemstone Herring", views: "15K", duration: "0:40", category: "Deep Sea", id: "UE0Owufauqk" },
         ];
 
         const legalTexts = {
-            tos: {
-                title: "Terms of Scale-vice",
-                body: "1. By entering FinHub, you agree to be treated as a fish. <br><br> 2. You shall not attempt to cook any content found on this website.<br><br>3. We reserve the right to move your account to a different tank without notice.<br><br>4. Any disputes will be settled via bubble-blowing contest in the deep sea courts of Neptune."
-            },
-            privacy: {
-                title: "Privacy Policy (The Bubble Wall)",
-                body: "We value your privacy as much as a pufferfish values its air. <br><br> We do not store your data on hard drives; we etch it into coral reefs using tiny shrimp. <br><br> Your browsing history is shared only with the local school of tuna for quality assurance purposes. If you wish to be forgotten, please act like a goldfish and simply forget who you are."
-            },
-            leak: {
-                title: "Report a Leak",
-                body: "Is your tank springing a leak? Is there water where it shouldn't be? <br><br> Please report all leaks immediately to our Underwater Plumbing Department. Note: If the 'leak' is actually just your fish swimming too fast, that is not a bug; that is a feature of high-velocity fins."
-            }
+            tos: { title: "Terms of Scale-vice", body: "1. By entering FinHub, you agree to be treated as a fish..." },
+            privacy: { title: "Privacy Policy", body: "We value your privacy as much as a pufferfish values its air..." },
+            leak: { title: "Report a Leak", body: "Is your tank springing a leak? Please report immediately." }
         };
 
-        const grid = document.getElementById('videoGrid');
-
         function renderVideos(filter = "") {
+            const grid = document.getElementById('videoGrid');
             grid.innerHTML = "";
             const filteredFish = fishDatabase.filter(f => f.title.toLowerCase().includes(filter.toLowerCase()));
-            
             filteredFish.forEach((fish) => {
+                const thumbUrl = `https://img.youtube.com/vi/${fish.id}/hqdefault.jpg`;
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openPlayer(fish);
                 card.innerHTML = `
-                    <img src="${fish.img}" class="thumbnail">
+                    <img src="${thumbUrl}" class="thumbnail">
                     <div class="duration">${fish.duration}</div>
                     <div class="card-info">
                         <div class="card-title">${fish.title}</div>
                         <div class="card-meta">${fish.views} views • ${fish.category}</div>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
         }
 
-        // Trigger search on Enter key
-        function handleSearchKey(event) {
-            if (event.key === "Enter") {
-                searchFish();
-            }
-        }
-
-        // Reset to defaults when input is cleared
+        function handleSearchKey(e) { if (e.key === "Enter") searchFish(); }
         function handleSearchInput() {
-            const term = document.getElementById('searchInput').value;
-            if (term === "") {
+            if (document.getElementById('searchInput').value === "") {
                 renderVideos("");
                 document.getElementById('category-title').innerText = "Most Scaled Videos";
             }
         }
-
         function searchFish() {
             const term = document.getElementById('searchInput').value;
             renderVideos(term);
             document.getElementById('category-title').innerText = term ? `Search results for: ${term}` : "Most Scaled Videos";
         }
 
-        // Video Modal Logic
+        // FIXED PLAYER LOGIC - Using DOM elements instead of innerHTML strings
         function openPlayer(fish) {
             document.getElementById('player').style.display = 'flex';
             document.getElementById('playingTitle').innerText = fish.title;
-            document.getElementById('mainFishImage').src = fish.img;
+            const container = document.getElementById('videoContainer');
+            container.innerHTML = ""; // Clear current content
+
+            if (fish.id) {
+                const iframe = document.createElement('iframe');
+                // Standard YouTube Embed dimensions
+                iframe.width = "854"; 
+                iframe.height = "480";
+                // rel=0 prevents showing unrelated videos at the end
+                iframe.src = `https://www.youtube.com/embed/${fish.id}?rel=0`;
+                iframe.title = fish.title;
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+                iframe.allowFullscreen = true;
+
+                container.appendChild(iframe);
+            }
         }
 
-        // Legal Modal Logic
         function openLegal(type) {
             const data = legalTexts[type];
             document.getElementById('legalTitle').innerText = data.title;
@@ -359,13 +206,10 @@
 
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
+            if(id === 'player') document.getElementById('videoContainer').innerHTML = "";
         }
 
-        function handleModalClick(event, id) {
-            if (event.target.id === id) {
-                closeModal(id);
-            }
-        }
+        function handleModalClick(e, id) { if (e.target.id === id) closeModal(id); }
 
         renderVideos();
     </script>
