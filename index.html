@@ -124,111 +124,120 @@
     </div>
 
     <script>
-        const API_KEY = "AIzaSyCQ8WFSxVOKliO7pItMEOv3G2jZcIwkAnQ";
-        const PLAYLIST_ID = "PLesFbZ70pUtM";
-        let fishDatabase = [];
+    const API_KEY = "AIzaSyCQ8WFSxVOKliO7pItMEOv3G2jZcIwkAnQ";
+    const PLAYLIST_ID = "PLesFbZ70pUtM";
+    let fishDatabase = [];
 
-        const legalTexts = {
-            tos: {
+    const legalTexts = {
+        tos: {
             title: "Terms of Scale-vice",
             body: "1. By entering FinHub, you agree to be treated as a fish. <br><br> 2. You shall not attempt to cook any content found on this website.<br><br>3. We reserve the right to move your account to a different tank without notice.<br><br>4. Any disputes will be settled via bubble-blowing contest in the deep sea courts of Neptune."
-            },
-            privacy: {
+        },
+        privacy: {
             title: "Privacy Policy (The Bubble Wall)",
             body: "We value your privacy as much as a pufferfish values its air. <br><br> We do not store your data on hard drives; we etch it into coral reefs using tiny shrimp. <br><br> Your browsing history is shared only with the local school of tuna for quality assurance purposes. If you wish to be forgotten, please act like a goldfish and simply forget who you are."
-            },
-            leak: {
+        },
+        leak: {
             title: "Report a Leak",
             body: "Is your tank springing a leak? Is there water where it shouldn't be? <br><br> Please report all leaks immediately to our Underwater Plumbing Department. Note: If the 'leak' is actually just your fish swimming too fast, that is not a bug; that is a feature of high-velocity fins."
-            }
-        };
+        }
+    };
 
-        function renderVideos(filter = "") {
-            const grid = document.getElementById('videoGrid');
-            grid.innerHTML = "";
-            const filteredFish = fishDatabase.filter(f => f.title.toLowerCase().includes(filter.toLowerCase()));
-            filteredFish.forEach((fish) => {
-                const thumbUrl = `https://img.youtube.com/vi/${fish.id}/hqdefault.jpg`;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openPlayer(fish);
-                card.innerHTML = `
-                    <img src="${thumbUrl}" class="thumbnail">
-                    <div class="duration">${fish.duration}</div>
-                    <div class="card-info">
-                        <div class="card-title">${fish.title}</div>
-                        <div class="card-meta">${fish.views} views • ${fish.category}</div>
-                    </div>`;
-                grid.appendChild(card);
-            });
+    function renderVideos(filter = "") {
+        const grid = document.getElementById('videoGrid');
+        grid.innerHTML = "";
+        const filteredFish = fishDatabase.filter(f => f.title.toLowerCase().includes(filter.toLowerCase()));
+        filteredFish.forEach((fish) => {
+            const thumbUrl = `https://img.youtube.com/vi/${fish.id}/hqdefault.jpg`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = () => openPlayer(fish);
+            card.innerHTML = `
+                <img src="${thumbUrl}" class="thumbnail">
+                <div class="duration">${fish.duration}</dir>
+                <div class="card-info">
+                    <div class="card-title">${fish.title}</div>
+                    <div class="card-meta">${fish.views} views • ${fish.category}</div>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    function handleSearchKey(e) { if (e.key === "Enter") searchFish(); }
+    function handleSearchInput() {
+        if (document.getElementById('searchInput').value === "") {
+            renderVideos("");
+            document.getElementById('category-title').innerText = "Most Scaled Videos";
+        }
+    }
+    function searchFish() {
+        const term = document.getElementById('searchInput').value;
+        renderVideos(term);
+        document.getElementById('category-title').innerText = term ? `Search results for: ${term}` : "Most Scaled Videos";
+    }
+
+    function openPlayer(fish) {
+        document.getElementById('player').style.display = 'flex';
+        document.getElementById('playingTitle').innerText = fish.title;
+        const container = document.getElementById('videoContainer');
+        container.innerHTML = ""; 
+
+        if (fish.id) {
+            const iframe = document.createElement('iframe');
+            iframe.width = "854"; 
+            iframe.height = "480";
+            iframe.src = `https://www.youtube.com/embed/${fish.id}?rel=0`;
+            iframe.title = fish.title;
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+            iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+            iframe.allowFullscreen = true;
+            container.appendChild(iframe);
+        }
+    }
+
+    function openLegal(type) {
+        const data = legalTexts[type];
+        document.getElementById('legalTitle').innerText = data.title;
+        document.getElementById('legalBody').innerHTML = data.body;
+        document.getElementById('legalModal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+        if(id === 'player') document.getElementById('videoContainer').innerHTML = "";
+    }
+
+    function formatDuration(duration) {
+        if (!duration) return "0:00";
+        const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+        const hours = parseInt(match[1]) || 0;
+        const minutes = parseInt(match[2]) || 0;
+        const seconds = parseInt(match[3]) || 0;
+
+        if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    async function loadPlaylist() {
+        // 1. Check Cache
+        const cachedFish = localStorage.getItem('finhub_cache');
+        const cacheTime = localStorage.getItem('finhub_cache_time');
+        const oneHour = 60 * 60 * 1000;
+
+        if (cachedFish && (Date.now() - cacheTime < oneHour)) {
+            console.log("Loading fish from the local tank...");
+            fishDatabase = JSON.parse(cachedFish);
+            renderVideos();
+            return; 
         }
 
-        function handleSearchKey(e) { if (e.key === "Enter") searchFish(); }
-        function handleSearchInput() {
-            if (document.getElementById('searchInput').value === "") {
-                renderVideos("");
-                document.getElementById('category-title').innerText = "Most Scaled Videos";
-            }
-        }
-        function searchFish() {
-            const term = document.getElementById('searchInput').value;
-            renderVideos(term);
-            document.getElementById('category-title').innerText = term ? `Search results for: ${term}` : "Most Scaled Videos";
-        }
+        // 2. Fresh Fetch logic
+        let nextPageToken = ""; // MOVED TO TOP: Now defined before use in loop
+        fishDatabase = []; // RESET: Prevent duplicates on refresh
 
-        // FIXED PLAYER LOGIC - Using DOM elements instead of innerHTML strings
-        function openPlayer(fish) {
-            document.getElementById('player').style.display = 'flex';
-            document.getElementById('playingTitle').innerText = fish.title;
-            const container = document.getElementById('videoContainer');
-            container.innerHTML = ""; // Clear current content
-
-            if (fish.id) {
-                const iframe = document.createElement('iframe');
-                // Standard YouTube Embed dimensions
-                iframe.width = "854"; 
-                iframe.height = "480";
-                // rel=0 prevents showing unrelated videos at the end
-                iframe.src = `https://www.youtube.com/embed/${fish.id}?rel=0`;
-                iframe.title = fish.title;
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-                iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-                iframe.allowFullscreen = true;
-
-                container.appendChild(iframe);
-            }
-        }
-
-        function openLegal(type) {
-            const data = legalTexts[type];
-            document.getElementById('legalTitle').innerText = data.title;
-            document.getElementById('legalBody').innerHTML = data.body;
-            document.getElementById('legalModal').style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-            if(id === 'player') document.getElementById('videoContainer').innerHTML = "";
-        }
-
-        // Helper function to convert YouTube ISO 8601 duration (PT#M#S) to human readable (M:S)
-        function formatDuration(duration) {
-            if (!duration) return "0:00";
-            const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-            const hours = parseInt(match[1]) || 0;
-            const minutes = parseInt(match[2]) || 0;
-            const seconds = parseInt(match[3]) || 0;
-
-            if (hours > 0) {
-                return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        async function loadPlaylist() {
-        let nextPageToken = "";
-        
         try {
             while (true) {
                 const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${PLAYLIST_ID}&maxResults=50&pageToken=${nextPageToken}&key=${API_KEY}`;
@@ -265,7 +274,9 @@
                 if (!nextPageToken) break;
             }
             
-            // IMPORTANT: Trigger the render after data is loaded
+            // Save to cache and render ONLY if fetch was successful
+            localStorage.setItem('finhub_cache', JSON.stringify(fishDatabase));
+            localStorage.setItem('finhub_cache_time', Date.now());
             renderVideos(); 
 
         } catch (error) {
@@ -274,9 +285,10 @@
         }
     }
 
-        function handleModalClick(e, id) { if (e.target.id === id) closeModal(id); }
+    function handleModalClick(e, id) { if (e.target.id === id) closeModal(id); }
 
-        loadPlaylist();
+    loadPlaylist();
     </script>
+
 </body>
 </html>
