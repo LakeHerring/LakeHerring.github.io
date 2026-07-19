@@ -126,7 +126,7 @@
     <script>
         const API_KEY = "AIzaSyCQ8WFSxVOKliO7pItMEOv3G2jZcIwkAnQ";
         const PLAYLIST_ID = "PLesFbZ70pUtM";
-        const fishDatabase = {};
+        let fishDatabase = [];
 
         const legalTexts = {
             tos: {
@@ -212,75 +212,67 @@
             if(id === 'player') document.getElementById('videoContainer').innerHTML = "";
         }
 
-        async function loadPlaylist() {
+        // Helper function to convert YouTube ISO 8601 duration (PT#M#S) to human readable (M:S)
+        function formatDuration(duration) {
+            if (!duration) return "0:00";
+            const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+            const hours = parseInt(match[1]) || 0;
+            const minutes = parseInt(match[2]) || 0;
+            const seconds = parseInt(match[3]) || 0;
 
-        let fishDatabase = [];
-        let nextPageToken = "";
-
-        while (true) {
-
-            const playlistUrl =
-                `https://www.googleapis.com/youtube/v3/playlistItems` +
-                `?part=snippet` +
-                `&playlistId=${PLAYLIST_ID}` +
-                `&maxResults=50` +
-                `&pageToken=${nextPageToken}` +
-                `&key=${API_KEY}`;
-
-            const playlistResponse = await fetch(playlistUrl);
-            const playlistData = await playlistResponse.json();
-
-            const ids = [];
-
-            playlistData.items.forEach(item => {
-                if (item.snippet.resourceId) {
-                    ids.push(item.snippet.resourceId.videoId);
-                }
-            });
-
-            if (ids.length > 0) {
-
-                const videoUrl =
-                    `https://www.googleapis.com/youtube/v3/videos` +
-                    `?part=contentDetails,statistics` +
-                    `&id=${ids.join(",")}` +
-                    `&key=${API_KEY}`;
-
-                const videoResponse = await fetch(videoUrl);
-                const videoData = await videoResponse.json();
-
-                const lookup = {};
-
-                videoData.items.forEach(video => {
-                    lookup[video.id] = video;
-                });
-
-                playlistData.items.forEach(item => {
-
-                    const id = item.snippet.resourceId.videoId;
-                    const info = lookup[id];
-
-                    fishDatabase.push({
-                        title: item.snippet.title,
-                        id: id,
-                        views: info ?
-                            Number(info.statistics.viewCount).toLocaleString() :
-                            "",
-                        duration: info ?
-                            info.contentDetails.duration :
-                            "",
-                        category: "Deep Sea"
-                    });
-
-                });
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
-
-            if (!playlistData.nextPageToken)
-                break;
-
-            nextPageToken = playlistData.nextPageToken;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
-}
+
+        async function loadPlaylist() {
+        let nextPageToken = "";
+        
+        try {
+            while (true) {
+                const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${PLAYLIST_ID}&maxResults=50&pageToken=${nextPageToken}&key=${API_KEY}`;
+                const playlistResponse = await fetch(playlistUrl);
+                const playlistData = await playlistResponse.json();
+
+                if (playlistData.error) throw new Error(playlistData.error.message);
+
+                const ids = playlistData.items.map(item => item.snippet.resourceId.videoId);
+
+                if (ids.length > 0) {
+                    const videoUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${ids.join(",")}&key=${API_KEY}`;
+                    const videoResponse = await fetch(videoUrl);
+                    const videoData = await videoResponse.json();
+
+                    const lookup = {};
+                    videoData.items.forEach(video => { lookup[video.id] = video; });
+
+                    playlistData.items.forEach(item => {
+                        const id = item.snippet.resourceId.videoId;
+                        const info = lookup[id];
+
+                        fishDatabase.push({
+                            title: item.snippet.title,
+                            id: id,
+                            views: info ? Number(info.statistics.viewCount).toLocaleString() : "0",
+                            duration: info ? formatDuration(info.contentDetails.duration) : "0:00",
+                            category: "Deep Sea"
+                        });
+                    });
+                }
+
+                nextPageToken = playlistData.nextPageToken;
+                if (!nextPageToken) break;
+            }
+            
+            // IMPORTANT: Trigger the render after data is loaded
+            renderVideos(); 
+
+        } catch (error) {
+            console.error("Error loading fishy content:", error);
+            document.getElementById('category-title').innerText = "The tank is leaking! (API Error)";
+        }
+    }
 
         function handleModalClick(e, id) { if (e.target.id === id) closeModal(id); }
 
