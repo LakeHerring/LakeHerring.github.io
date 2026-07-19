@@ -83,6 +83,87 @@
 
         .legal-content { background: #1b1b1b; padding: 30px; border: 2px solid var(--hub-accent); max-width: 600px; color: #ccc; line-height: 1.6; }
         .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+
+        /* CLAN MODAL STYLES */
+        .clan-btn {
+            color: var(--hub-accent);
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .clan-btn:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .clan-card {
+            background-color: var(--hub-dark-grey);
+            border: 3px solid var(--hub-accent);
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,140,255,0.4);
+        }
+
+        .clan-title {
+            color: white !important; /* Overriding the default h2 style */
+            font-size: 28px !important;
+            border: none !important;
+            margin-bottom: 5px !important;
+        }
+
+        .clan-tagline {
+            color: #999;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        .clan-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+            text-align: left;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .detail-item {
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .accent-text {
+            color: var(--hub-accent);
+            font-weight: bold;
+        }
+
+        .clan-description {
+            color: #bbb;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .clan-join-btn {
+            background-color: var(--hub-accent);
+            color: black;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .clan-join-btn:hover {
+            transform: scale(1.1);
+            background-color: #4da3ff;
+        }
+
     </style>
 </head>
 <body>
@@ -93,7 +174,7 @@
             <input type="text" id="searchInput" placeholder="Search for fishy content..." onkeydown="handleSearchKey(event)" oninput="handleSearchInput()">
             <button onclick="searchFish()">Search</button>
         </div>
-        <div style="color: var(--hub-accent); font-weight: bold; cursor: pointer;">Upload Fin</div>
+        <div class="clan-btn" onclick="openClanModal()">Our Clan 🛡️</div>
     </header>
 
     <nav>
@@ -123,7 +204,31 @@
         <div id="legalBody" class="legal-content"></div>
     </div>
 
+    <!-- Clan Modal -->
+    <div id="clanModal" class="modal" onclick="handleModalClick(event, 'clanModal')">
+        <span class="close-btn" onclick="closeModal('clanModal')">&times;</span>
+        <div class="clan-card">
+            <h2 class="clan-title">FinHub 🐟</h2>
+            <p class="clan-tagline">"Scaling the heights of Gielinor"</p>
+            
+            <div class="clan-details">
+                <div class="detail-item"><strong>Alliance:</strong> <span class="accent-text">Independent</span></div>
+                <div class="detail-item"><strong>Requirement:</strong> <span class="accent-text">Chill & Non-Toxic</span></div>
+                <div class="detail-item"><strong>Focus:</strong> <span class="accent-text">PVM / Social / Fishy Content</span></div>
+                <div class="detail-item"><strong>Contact:</strong> <span class="accent-text">Lake Herring or PissArne if you have any questions</span></div>
+            </div>
+
+            <div class="clan-description">
+                Welcome to the finest school of fish in OSRS. We specialize in high-efficiency fishing, 
+                avoiding the taxman, and making sure no one gets cooked.
+            </div>
+        </div>
+    </div>
+
     <script>
+    function openClanModal() {
+        document.getElementById('clanModal').style.display = 'flex';
+    }
     const API_KEY = "AIzaSyCQ8WFSxVOKliO7pItMEOv3G2jZcIwkAnQ";
     const PLAYLIST_ID = "PLesFbZ70pUtM";
     let fishDatabase = [];
