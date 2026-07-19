@@ -154,7 +154,7 @@
             card.onclick = () => openPlayer(fish);
             card.innerHTML = `
                 <img src="${thumbUrl}" class="thumbnail">
-                <div class="duration">${fish.duration}</dir>
+                <div class="duration">${fish.duration}</div>
                 <div class="card-info">
                     <div class="card-title">${fish.title}</div>
                     <div class="card-meta">${fish.views} views • ${fish.category}</div>
@@ -207,6 +207,33 @@
         document.getElementById(id).style.display = 'none';
         if(id === 'player') document.getElementById('videoContainer').innerHTML = "";
     }
+
+    function cleanTitle(title) {
+        if (!title) return "Untitled Video";
+
+        // 1. Remove all hashtags (#word)
+        // This regex finds the # and all alphanumeric characters following it
+        let cleaned = title.replace(/#\w+/g, '');
+
+        // 2. Clean up whitespace and punctuation residuals
+        cleaned = cleaned
+            .replace(/\s+/g, ' ')     // Replace multiple spaces with one single space
+            .trim();                  // Remove spaces from start and end
+
+        // 3. Handle "Tag-Only" Titles
+        // If the title was ONLY hashtags, 'cleaned' will be empty.
+        // In this case, we remove JUST the '#' symbol so the words remain as a title.
+        if (cleaned === "") {
+            cleaned = title.replace(/#/g, '').replace(/\s+/g, ' ').trim();
+        }
+
+        // 4. Final Polish: Remove leading/trailing dashes or pipes often used to separate tags
+        // Example: "My Fish - #goldfish" -> "My Fish -" -> "My Fish"
+        cleaned = cleaned.replace(/^[\s\-\|]+|[\s\-\|]+$/g, '');
+
+        return cleaned || "Untitled Video";
+    }
+
 
     function formatDuration(duration) {
         if (!duration) return "0:00";
@@ -261,7 +288,7 @@
                         const info = lookup[id];
 
                         fishDatabase.push({
-                            title: item.snippet.title,
+                            title: cleanTitle(item.snippet.title),
                             id: id,
                             views: info ? Number(info.statistics.viewCount).toLocaleString() : "0",
                             duration: info ? formatDuration(info.contentDetails.duration) : "0:00",
